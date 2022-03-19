@@ -1,6 +1,8 @@
 package pear.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -8,7 +10,9 @@ import javax.persistence.Table;
 @Table(name="enderecos")
 public class Endereco {
 	
-	@Id
+	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+	private Long id; 
+	private String tipoEndereco;
 	private String CEP;
 	private String rua;
 	private Integer numero;
@@ -18,6 +22,22 @@ public class Endereco {
 	public Endereco() {
 	}
 	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getTipoEndereco() {
+		return tipoEndereco;
+	}
+
+	public void setTipoEndereco(String tipoEndereco) {
+		this.tipoEndereco = tipoEndereco;
+	}
+
 	public String getCEP() {
 		return CEP;
 	}
