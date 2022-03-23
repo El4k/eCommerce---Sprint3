@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -16,7 +15,7 @@ public class Usuario {
 	private Integer id;
 	private String nome;
 	private String senha;
-	@ManyToMany
+	@ManyToOne
 	private Endereco endereco;
 	private Produto produto;
 	
