@@ -24,7 +24,11 @@ public class Login implements Acao {
 			Usuario usuario = usuarioController.buscaUsuario(login, password);
 			HttpSession session = request.getSession();
 			session.setAttribute("usuarioLogado", usuario);
-			return "redirect:pear?acao=TelaLogin";
+			if(usuario != null) {
+				return "redirect:pear?acao=TelaEntrada";
+			}else {
+				return "redirect:pear?acao=TelaLogin";
+			}
 		} catch (Exception e) {
 			return "redirect:pear?acao=TelaIndex";
 		}
