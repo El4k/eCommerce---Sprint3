@@ -42,7 +42,7 @@ public class Cadastro implements Acao {
 		} else {
 
 			Endereco endereco = new Endereco(paramRua, numero, paramCidade, paramEstado, paramCEP);
-			Usuario usuario = new Usuario(nomeCliente, senhaCliente, CEPExiste);
+			Usuario usuario = new Usuario(nomeCliente, senhaCliente, endereco);
 
 			UsuarioController usuarioController = new UsuarioController();
 
