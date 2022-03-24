@@ -22,6 +22,14 @@ public class Endereco {
 	public Endereco() {
 	}
 	
+	public Endereco(String paramRua, Integer numero, String paramCidade, String paramEstado, String paramCEP) {
+		this.rua = paramRua;
+		this.numero = numero;
+		this.cidade = paramCidade;
+		this.estado = paramEstado;
+		this.CEP = paramCEP;
+	}
+
 	public Long getId() {
 		return id;
 	}
