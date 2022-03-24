@@ -31,4 +31,14 @@ private EntityManager em = JPAUtil.getEntityManager();
 		this.em.remove(address);
 		em.getTransaction().commit();
 	}
+
+	public Endereco buscaCEP(String CEP) {
+		try{
+			String jpql = "FROM Endereco WHERE CEP = :CEP";
+			return em.createQuery(jpql, Endereco.class).setParameter("CEP", CEP).getSingleResult();
+		} catch (Exception e) {
+			System.err.println("CEP não encontrado!");
+			return null;
+		}
+	}
 }

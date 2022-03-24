@@ -22,4 +22,8 @@ public class EnderecoController {
 	public void remover(Endereco address) {
 		this.enderecoDAO.remover(address);
 	}
+
+	public Endereco buscaCEP(String CEP) {
+		return this.enderecoDAO.buscaCEP(CEP);
+	}
 }

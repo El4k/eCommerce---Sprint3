@@ -17,6 +17,7 @@ public class Usuario {
 	private String senha;
 	@ManyToOne
 	private Endereco endereco;
+	@ManyToOne
 	private Produto produto;
 	
 	public Usuario() {
