@@ -5,12 +5,14 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Cadastro de novo usuário</title>
+<style> label {display: block; 	float: left; } label, input { 	width:100px; 	margin: 3px 0; } input { 	width:150px; } 	width:200px; }</style>
 </head>
 <body>
 	<div class="card">
     	<h1>Formulário de Cadastro</h1>
     <div class="container-form">
 	<form action="${linkEntradaServlet}" method="post">
+	<fieldset>
         <div class="label-container">
     		<label for='client-login'>Login: </label>
        		<input id='client-login' placeholder="Login" name="login" >
@@ -44,12 +46,9 @@
 	        <input type="submit" value="Cadastrar">
         </div>
         <div class="label-container">
-	        <a href="${linkEntradaServlet}?acao=TelaIndex">
-	         	Voltar
-	        </a>
+	        <a href="${linkEntradaServlet}?acao=TelaIndex"> Voltar </a>
         </div>
+        <fieldset>
 		</form>
-	</div>
-  </div>
 </body>
 </html>

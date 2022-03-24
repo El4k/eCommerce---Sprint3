@@ -44,5 +44,8 @@ public class Produto {
 		this.valorProduto = valorProduto;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return "<b>Produto:</b> " + nomeProduto + "<br><b>Descricao:</b> " + descricao + "<br><b>Valor: </b> " + valorProduto + "<br><br>";
+	}
 }

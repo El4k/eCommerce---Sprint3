@@ -1,5 +1,7 @@
 package pear.controller;
 
+import java.util.List;
+
 import pear.dao.ProdutoDAO;
 import pear.model.Produto;
 
@@ -22,4 +24,9 @@ public class ProdutoController {
 	public void remover(Produto product) {
 		this.produtoDAO.remover(product);
 	}
+	
+	public List<Produto> buscaTodos() {
+		return this.produtoDAO.buscaTodos();
+	}
+	
 }

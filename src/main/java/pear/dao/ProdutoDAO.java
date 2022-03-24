@@ -1,5 +1,7 @@
 package pear.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import pear.model.Produto;
@@ -32,4 +34,10 @@ public class ProdutoDAO {
 		this.em.remove(product);
 		em.getTransaction().commit();
 	}
+	
+	public List<Produto> buscaTodos() {
+		String jpql = "SELECT p FROM Produto p";
+		return em.createQuery(jpql, Produto.class).getResultList();
+	}
+	
 }
