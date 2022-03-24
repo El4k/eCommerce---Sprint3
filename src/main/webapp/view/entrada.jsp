@@ -5,24 +5,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+<header>
+<div align=right><a href="/ecommerce/pear?acao=TelaIndex"><input type="image" img src="http://www.agenciaeplus.com.br/wp-content/uploads/2017/09/carrinho.jpg" widht="70" height="70"></a><a href="/ecommerce/pear?acao=TelaIndex"><input type="image" img src="https://www.seekpng.com/png/full/138-1387775_login-to-do-whatever-you-want-login-icon.png" widht="70" height="70"></a><div>
+</header>
 <meta charset="ISO-8859-1">
 <title>Entrada</title>
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<meta name="google-signin-client_id"
-	content="323562547940-gn2im3vv9f8hdmfkrr78sf16s6533v8r.apps.googleusercontent.com">
-<script>
-	function onSignIn(googleUser) {
-		var profile = googleUser.getBasicProfile();
-		console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-		console.log('Name: ' + profile.getName());
-		console.log('Image URL: ' + profile.getImageUrl());
-		console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-	}
-</script>
 </head>
 <body>
-	<c:if test="${not empty produtos}"><label for="html"><b>Lista de Produtos: </b></label><br><br> ${produtos}</c:if>
+	<c:if test="${not empty produtos}"><label for="html"><b>Lista de Produtos: </b></label></div><br><hr> ${produtos} </c:if>
 	<br><br><br>
-	<div class="g-signin2" data-onsuccess="onSignIn"></div>
 </body>
 </html>

@@ -15,6 +15,7 @@ public class Produto {
 	private String nomeProduto;
 	private String descricao;
 	private Double valorProduto;
+	private String imagem;
 	
 	public Produto() {
 	}
@@ -44,8 +45,17 @@ public class Produto {
 		this.valorProduto = valorProduto;
 	}
 	
+	public String getImagem() {
+		return imagem;
+	}
+
+	public void setImagem(String imagem) {
+		this.imagem = imagem;
+	}
+	
 	@Override
 	public String toString() {
-		return "<b>Produto:</b> " + nomeProduto + "<br><b>Descricao:</b> " + descricao + "<br><b>Valor: </b> " + valorProduto + "<br><br>";
+		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br><b>Valor: R$</b> " 
+	+ valorProduto + "</div><br><div><img src= "+imagem+" width=200 height=100></div><hr><br>";
 	}
 }
