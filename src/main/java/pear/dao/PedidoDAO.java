@@ -31,4 +31,10 @@ public class PedidoDAO {
 		this.em.remove(order);
 		em.getTransaction().commit();
 	}
+	
+	public Pedido consultarId(Long id) {
+		em.getTransaction().begin();
+		return em.find(Pedido.class, id);
+	}
+	
 }

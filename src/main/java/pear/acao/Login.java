@@ -26,15 +26,12 @@ public class Login implements Acao {
 			HttpSession session = request.getSession();
 			session.setAttribute("usuarioLogado", usuario);
 			if(usuario != null) {
-				System.out.println("login com sucesso");
 				return "redirect:pear?acao=TelaEntrada";
 			}else {
-				System.err.println("login invalido");
+				System.err.println("Login Invalido");
 				return "redirect:pear?acao=TelaIndex";
 			}
 		} catch (Exception e) {
-			System.out.println("ERROOOOO");
-			e.printStackTrace();
 			return "redirect:pear?acao=TelaIndex";
 		}
 	}
