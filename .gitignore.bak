@@ -1,0 +1,7 @@
+/target/
+/bin/
+.settings
+.classpath
+.project
+src/main/resources/META-INF/persistence.xml
+src/main/webapp/WEB-INF/web.xml

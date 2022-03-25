@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import pear.controller.ProdutoController;
+
 import pear.model.Produto;
 
 public class TelaEntrada implements Acao {
@@ -20,6 +21,7 @@ public class TelaEntrada implements Acao {
 		HttpSession session = request.getSession();
 		ProdutoController produtoController = new ProdutoController();
 		List<Produto> produtos = produtoController.buscaTodos();
+			
 		session.setAttribute("produtos", produtos);
 		
 		return "forward:entrada.jsp";

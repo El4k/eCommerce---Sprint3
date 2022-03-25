@@ -6,11 +6,11 @@ import pear.model.Pedido;
 import pear.util.JPAUtil;
 
 public class PedidoDAO {
-	
+
 	private EntityManager em = JPAUtil.getEntityManager();
 
 	public PedidoDAO() {
-		
+
 	}
 
 	public void cadastrar(Pedido order) {
@@ -31,4 +31,11 @@ public class PedidoDAO {
 		this.em.remove(order);
 		em.getTransaction().commit();
 	}
+
+	public Pedido consultarPorId(Long i) {
+		
+		return em.find(Pedido.class, i);
+
+	}
+
 }

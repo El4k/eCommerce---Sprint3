@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import pear.model.Pedido;
 import pear.model.Produto;
 import pear.util.JPAUtil;
 
@@ -38,6 +39,12 @@ public class ProdutoDAO {
 	public List<Produto> buscaTodos() {
 		String jpql = "SELECT p FROM Produto p";
 		return em.createQuery(jpql, Produto.class).getResultList();
+	}
+	
+	public Produto consultarPorId(Long i) {
+		em.getTransaction().begin();
+		return em.find(Produto.class, i);
+
 	}
 	
 }

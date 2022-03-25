@@ -64,6 +64,8 @@ public class Pedido {
 		this.prazoEntrega = prazoEntrega;
 	}
 	
-	
+	public void addProduto(Produto prod) {
+		listaProdutos.add(prod);
+	}
 	
 }
