@@ -1,5 +1,6 @@
 package pear.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -19,12 +20,19 @@ public class Pedido {
 	@ManyToOne
 	private Usuario user;
 	@ManyToMany
-	private List<Produto> listaProdutos;
+	private List<Produto> listaProdutos = new ArrayList<>();
 	private double valorTotal;
 	private double valorFrete;
 	private Integer prazoEntrega;
 	
 	public Pedido() {
+	}
+	
+	public Pedido(double valorTotal, double valorFrete, Integer prazoEntrega) {
+		this.valorTotal = valorTotal;
+		this.valorFrete = valorFrete;
+		this.prazoEntrega = prazoEntrega;
+		this.listaProdutos = listaProdutos;
 	}
 	
 	public Long getId() {
@@ -64,6 +72,8 @@ public class Pedido {
 		this.prazoEntrega = prazoEntrega;
 	}
 	
-	
+	public void addProduto(Produto prod) {
+		listaProdutos.add(prod);
+	}
 	
 }
