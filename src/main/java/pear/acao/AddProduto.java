@@ -18,7 +18,13 @@ public class AddProduto implements Acao {
 			throws ServletException, IOException {
 		
 		HttpSession session = request.getSession();
-		Pedido pedido = (Pedido) session.getAttribute("pedido");
+//		Pedido pedido = (Pedido) session.getAttribute("pedido");
+		
+		PedidoController pedidoController = new PedidoController();
+		String idPedido = request.getParameter("PedidoId");
+		Long idPed = Long.parseLong(idPedido);
+		
+		Pedido pedido = pedidoController.consultarPorId(idPed); 
 		
 		String idProduto = request.getParameter("produto");
 		Long idProd = Long.parseLong(idProduto);
@@ -31,47 +37,10 @@ public class AddProduto implements Acao {
 		pedido.addProduto(produto);
 		System.out.println(pedido.getListaProdutos());
 		
-		PedidoController pedidoController = new PedidoController();
+//		PedidoController pedidoController = new PedidoController();
 		pedidoController.atualizar(pedido);
 		
 		return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
 		
-//		HttpSession session = request.getSession();
-//		
-//		String idPedido = request.getParameter("PedidoId");
-//		System.out.println(idPedido + " id pedido");
-//		String idProduto = request.getParameter("produto");
-//		System.out.println(idProduto + " id produto");
-//		
-//		Long idProd = Long.parseLong(idProduto);
-//		System.out.println(idProd + "id do produto convertido");
-//		
-//		Pedido pedido = (Pedido) session.getAttribute("pedido");
-//		PedidoController pedidoController = new PedidoController();
-//		
-//		Produto produto = new Produto();
-//		ProdutoController produtoController = new ProdutoController();
-//		System.out.println("pegando o idPedido" + idPedido);
-//		
-//		if ((idPedido == null) || idPedido=="") {
-//			
-//			pedidoController.cadastrar(pedido);
-//		} else {
-//			Long idPed = Long.parseLong(idPedido);	
-//			pedido = pedidoController.consultarPorId(idPed);
-//		}
-//		
-//		produto = produtoController.consultarPorId(idProd);
-//		pedido.addProduto(produto);
-//		
-//		pedidoController.atualizar(pedido);
-//		
-//		session.setAttribute("produto", produto);
-//		session.setAttribute("pedido", pedido);
-//		
-//		System.err.println("redirect:pear?acao=TelaEntrada&PedidoId=" + pedido.getId());
-//		
-//		return "redirect:pear?acao=TelaEntrada&PedidoId=" + pedido.getId();
-
 	}
 }

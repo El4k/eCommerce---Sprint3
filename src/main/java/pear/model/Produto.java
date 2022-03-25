@@ -16,6 +16,7 @@ public class Produto {
 	private String descricao;
 	private Double valorProduto;
 	private String imagem;
+	private Long quantidadeEstoque;
 	
 	public Produto() {
 	}
@@ -53,6 +54,14 @@ public class Produto {
 		this.imagem = imagem;
 	}
 	
+	public Long getQuantidadeEstoque() {
+		return quantidadeEstoque;
+	}
+
+	public void setQuantidadeEstoque(Long quantidadeEstoque) {
+		this.quantidadeEstoque = quantidadeEstoque;
+	}
+
 	@Override
 	public String toString() {
 		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br><b>Valor: R$</b> " 

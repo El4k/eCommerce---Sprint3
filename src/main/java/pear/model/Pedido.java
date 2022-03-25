@@ -20,7 +20,7 @@ public class Pedido {
 	@ManyToOne
 	private Usuario user;
 	@ManyToMany
-	private List<Produto> listaProdutos;
+	private List<Produto> listaProdutos = new ArrayList<>();
 	private double valorTotal;
 	private double valorFrete;
 	private Integer prazoEntrega;
@@ -32,7 +32,7 @@ public class Pedido {
 		this.valorTotal = valorTotal;
 		this.valorFrete = valorFrete;
 		this.prazoEntrega = prazoEntrega;
-		this.listaProdutos = new ArrayList<>();
+		this.listaProdutos = listaProdutos;
 	}
 	
 	public Long getId() {
