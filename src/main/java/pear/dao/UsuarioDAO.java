@@ -17,12 +17,14 @@ public class UsuarioDAO {
 		em.getTransaction().begin();
 		this.em.persist(user);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void atualizar(Usuario user) {
 		em.getTransaction().begin();
 		this.em.merge(user);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void remover(Usuario user) {
@@ -30,10 +32,17 @@ public class UsuarioDAO {
 		user = em.merge(user);
 		this.em.remove(user);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public Usuario buscaUsuario(String login, String senha) {
-		String jpql = "FROM User WHERE login = :login AND senha = :senha";
-		return em.createQuery(jpql, Usuario.class).setParameter("login", login).setParameter("senha", senha).getSingleResult();		
+		try {
+			String jpql = "FROM Usuario WHERE login = :login AND senha = :senha";
+			return em.createQuery(jpql, Usuario.class).setParameter("login", login).setParameter("senha", senha).getSingleResult();		
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Usuário não encontrado!");
+			return null;
+		}
 	}
 }
