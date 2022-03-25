@@ -22,8 +22,7 @@ public class PedidoController {
 	public void remover(Pedido order) {
 		this.pedidoDAO.remover(order);
 	}
-	
+
 	public Pedido consultarPorId(Long i) {
 		return this.pedidoDAO.consultarPorId(i);
-	}
 }

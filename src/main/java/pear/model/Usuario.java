@@ -12,8 +12,8 @@ import javax.persistence.Table;
 public class Usuario {
 	
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-	private Integer id;
-	private String nome;
+	private Long id;
+	private String login;
 	private String senha;
 	@ManyToOne
 	private Endereco endereco;
@@ -24,25 +24,25 @@ public class Usuario {
 	}
 	
 	public Usuario(String nome, String senha, Endereco endereco) {
-		this.nome = nome;
+		this.login = nome;
 		this.senha = senha;
 		this.endereco = endereco;
 	}
 	
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	public String getNome() {
-		return nome;
+	public String getLogin() {
+		return login;
 	}
 
-	public void setNome(String nome) {
-		this.nome = nome;
+	public void setLogin(String login) {
+		this.login = login;
 	}
 
 	public String getSenha() {

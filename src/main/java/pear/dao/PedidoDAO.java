@@ -35,7 +35,7 @@ public class PedidoDAO {
 		em.close();
 	}
 
-	public Pedido consultarPorId(Long i) {
+  public Pedido consultarPorId(Long i) {
 		return em.find(Pedido.class, i);
 	}
 
