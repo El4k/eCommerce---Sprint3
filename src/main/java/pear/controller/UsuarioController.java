@@ -28,4 +28,8 @@ public class UsuarioController {
 		return this.usuarioDAO.buscaUsuario(login, senha);
 	}
 	
+	public Usuario consultarId(Long id) {
+		return this.usuarioDAO.consultarId(id);
+	}
+	
 }

@@ -45,4 +45,10 @@ public class UsuarioDAO {
 			return null;
 		}
 	}
+	
+	public Usuario consultarId(Long id) {
+		em.getTransaction().begin();
+		String jpql = "SELECT u FROM usuario WHERE id = ?1";
+		return em.createQuery(jpql, Usuario.class).setParameter("id", id).getSingleResult();	
+	}
 }
