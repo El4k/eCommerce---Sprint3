@@ -13,7 +13,7 @@ public class Usuario {
 	
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Integer id;
-	private String nome;
+	private String login;
 	private String senha;
 	@ManyToOne
 	private Endereco endereco;
@@ -24,7 +24,7 @@ public class Usuario {
 	}
 	
 	public Usuario(String nome, String senha, Endereco endereco) {
-		this.nome = nome;
+		this.login = nome;
 		this.senha = senha;
 		this.endereco = endereco;
 	}
@@ -38,11 +38,11 @@ public class Usuario {
 	}
 
 	public String getNome() {
-		return nome;
+		return login;
 	}
 
 	public void setNome(String nome) {
-		this.nome = nome;
+		this.login = nome;
 	}
 
 	public String getSenha() {
