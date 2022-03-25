@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
-import pear.model.Pedido;
 import pear.model.Produto;
 import pear.util.JPAUtil;
 
@@ -21,12 +20,14 @@ public class ProdutoDAO {
 		em.getTransaction().begin();
 		this.em.persist(product);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void atualizar(Produto product) {
 		em.getTransaction().begin();
 		this.em.merge(product);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void remover(Produto product) {
@@ -34,6 +35,7 @@ public class ProdutoDAO {
 		product = em.merge(product);
 		this.em.remove(product);
 		em.getTransaction().commit();
+		em.close();
 	}
 	
 	public List<Produto> buscaTodos() {
@@ -42,9 +44,7 @@ public class ProdutoDAO {
 	}
 	
 	public Produto consultarPorId(Long i) {
-		em.getTransaction().begin();
 		return em.find(Produto.class, i);
-
 	}
 	
 }

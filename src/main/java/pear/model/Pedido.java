@@ -1,5 +1,6 @@
 package pear.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -25,6 +26,13 @@ public class Pedido {
 	private Integer prazoEntrega;
 	
 	public Pedido() {
+	}
+	
+	public Pedido(double valorTotal, double valorFrete, Integer prazoEntrega) {
+		this.valorTotal = valorTotal;
+		this.valorFrete = valorFrete;
+		this.prazoEntrega = prazoEntrega;
+		this.listaProdutos = new ArrayList<>();
 	}
 	
 	public Long getId() {

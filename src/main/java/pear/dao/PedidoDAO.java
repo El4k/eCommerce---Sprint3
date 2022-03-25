@@ -17,12 +17,14 @@ public class PedidoDAO {
 		em.getTransaction().begin();
 		this.em.persist(order);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void atualizar(Pedido order) {
 		em.getTransaction().begin();
 		this.em.merge(order);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public void remover(Pedido order) {
@@ -30,12 +32,11 @@ public class PedidoDAO {
 		order = em.merge(order);
 		this.em.remove(order);
 		em.getTransaction().commit();
+		em.close();
 	}
 
 	public Pedido consultarPorId(Long i) {
-		
 		return em.find(Pedido.class, i);
-
 	}
 
 }

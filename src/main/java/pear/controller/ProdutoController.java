@@ -29,4 +29,8 @@ public class ProdutoController {
 		return this.produtoDAO.buscaTodos();
 	}
 	
+	public Produto consultarPorId(Long i) {
+		return this.produtoDAO.consultarPorId(i);
+	}
+	
 }
