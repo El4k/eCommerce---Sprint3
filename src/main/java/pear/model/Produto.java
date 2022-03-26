@@ -62,9 +62,15 @@ public class Produto {
 		this.quantidadeEstoque = quantidadeEstoque;
 	}
 
+	public String criaLink () {
+		return "/ecommerce/pear?acao=RemoveProduto&produto=";
+	}
+	
 	@Override
 	public String toString() {
-		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br><b>Valor: R$</b> " 
-	+ valorProduto + "</div><br><div><img src= "+imagem+" width=200 height=100></div><hr><br>";
+		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br>"
+		+ "<b>Valor: R$</b> "+ valorProduto + "</div><br>"
+		+ "<div><img src= "+imagem+" width=200 height=100></div><hr><br>"
+				+ "<a href="+criaLink()+id+"><input type=submit></a>";
 	}
 }

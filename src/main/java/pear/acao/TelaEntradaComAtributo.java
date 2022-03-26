@@ -14,7 +14,9 @@ public class TelaEntradaComAtributo implements Acao {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		
-		session.getAttribute("pedido");
+		
+		System.err.println("entrando no carrinho");
+		session.getAttribute("PedidoId");
 		session.getAttribute("produtos");
 		
 		return "forward:entrada.jsp";
