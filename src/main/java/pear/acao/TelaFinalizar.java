@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import pear.model.Pedido;
 import pear.model.Usuario;
-import pear.util.CorreiosUtil;
 
-public class TelaIndex implements Acao {
+public class TelaFinalizar implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
@@ -22,11 +20,9 @@ public class TelaIndex implements Acao {
 		
 		if (usuario != null) {
 			sessao.setAttribute("usuarioLogado", usuario);
-			CorreiosUtil.executa(request, response);
-			return "forward:frete.jsp";
+			return "forward:finalizarCompra.jsp";
 		}
-		
+		sessao.setAttribute("finalizar", true);
 		return "forward:index.jsp";
 	}
-
 }

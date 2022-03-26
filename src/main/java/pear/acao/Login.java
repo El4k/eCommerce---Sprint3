@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import pear.controller.UsuarioController;
+import pear.model.Pedido;
 import pear.model.Usuario;
 
 public class Login implements Acao {
@@ -23,12 +24,17 @@ public class Login implements Acao {
 			UsuarioController usuarioController = new UsuarioController();
 			Usuario usuario = usuarioController.buscaUsuario(login, senha);
 			
-			HttpSession session = request.getSession();
-			session.setAttribute("usuarioLogado", usuario);
+			HttpSession sessao = request.getSession();
+			sessao.setAttribute("usuarioLogado", usuario);
+			Pedido pedido = (Pedido) sessao.getAttribute("pedido");
+			
 			if(usuario != null) {
-				return "redirect:pear?acao=TelaEntrada";
+				if ((Boolean) sessao.getAttribute("finalizar") == true) {
+					sessao.setAttribute("finalizar", false);
+					return "forward:finalizarCompra.jsp";
+				}
+				return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
 			}else {
-				System.err.println("Login Invalido");
 				return "redirect:pear?acao=TelaIndex";
 			}
 		} catch (Exception e) {

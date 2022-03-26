@@ -9,29 +9,32 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import pear.controller.PedidoController;
-import pear.controller.ProdutoController;
 import pear.model.Pedido;
 import pear.model.Produto;
 
-public class TelaEntrada implements Acao {
-
+public class RemoveProduto implements Acao {
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		HttpSession sessao = request.getSession();
-		ProdutoController produtoController = new ProdutoController();
-		List<Produto> produtos = produtoController.buscaTodos();
-		String estadoPedido = "criado";
-		Pedido pedido = new Pedido(0,0,0);
+		Pedido pedido = (Pedido) sessao.getAttribute("pedido");
+		
 		PedidoController pedidoController = new PedidoController();
-		pedidoController.cadastrar(pedido);
+		pedido = pedidoController.consultarPorId(pedido.getId()); 
 		
-		sessao.setAttribute("pedido", pedido);
-		sessao.setAttribute("produtos", produtos);
-		sessao.setAttribute("estadoPedido", estadoPedido);
-		
-		return "forward:entrada.jsp";
-	}
+		String idProduto = request.getParameter("produto");
+		Long idProd = Long.parseLong(idProduto);
+		List<Produto> produtos = pedido.getListaProdutos();
 
+		for (int i = 0; i < produtos.size(); i++) {
+			if (produtos.get(i).getId() == idProd) {
+				pedido.removeProduto(i);
+			}
+		}
+		pedidoController.atualizar(pedido);
+		sessao.setAttribute("pedido", pedido);
+		
+		return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
+	}
 }

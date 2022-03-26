@@ -5,19 +5,18 @@
 <%@ page import="pear.model.Pedido"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Entrada</title>
+<title>Carrinho de Compras</title>
 </head>
 <body>
-	<c:import url="header.jsp"/>
-	<c:if test="${not empty produtos}">
-		<label for="html"><b>Lista de Produtos: </b></label>
-		<br>
-		<hr>
-		<c:forEach items="${produtos}" var="produto">
+	<c:import url="header.jsp" />
+	<hr>
+	<c:if test="${not empty pedido}">
+		<c:forEach items="${pedido.listaProdutos}" var="produto">
 			<div>
 				<b>Produto:</b> ${ produto.nomeProduto} &nbsp ${produto.descricao }
 				<br> <b>Valor: R$</b> ${produto.valorProduto}
@@ -27,20 +26,18 @@
 				<img src="${produto.imagem }" width=200 height=100>
 			</div>
 			<br>
-			<input type="hidden" name="ProdutoId" value="${produto.id}">
-			<a
-				href="/ecommerce/pear?acao=AddProduto&PedidoId=${pedido.id}&produto=${produto.id}"><input
-				type="submit" value="Adicionar"></a>
+			<a href="/ecommerce/pear?acao=RemoveProduto&produto=${produto.id}"><input
+				type="submit" value="Remover Produto"></a>
 			<hr>
-			<br>
 		</c:forEach>
-		<br>
 	</c:if>
 	<br>
 	<br>
-	<br>
-
-	<input type="hidden" name="PedidoId" value="${pedido.id}">
-
+	<hr>
+	<a href="/ecommerce/pear?acao=TelaFinalizar"><input type="submit"
+		value="Finalizar compra"></a>
+	<a
+		href="/ecommerce/pear?acao=TelaEntradaComAtributo&PedidoId=${pedido.id}"><input
+		type="submit" value="Voltar"></a>
 </body>
 </html>
