@@ -66,11 +66,11 @@ public class Produto {
 		return "/ecommerce/pear?acao=RemoveProduto&produto=";
 	}
 	
-	@Override
-	public String toString() {
-		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br>"
-		+ "<b>Valor: R$</b> "+ valorProduto + "</div><br>"
-		+ "<div><img src= "+imagem+" width=200 height=100></div><hr><br>"
-				+ "<a href="+criaLink()+id+"><input type=submit></a>";
-	}
+//	@Override
+//	public String toString() {
+//		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br>"
+//		+ "<b>Valor: R$</b> "+ valorProduto + "</div><br>"
+//		+ "<div><img src= "+imagem+" width=200 height=100></div><br>"
+//				+ "<a href="+criaLink()+id+"><input type=submit value=Remover_Produto></a><hr>";
+//	}
 }

@@ -38,5 +38,4 @@ public class PedidoDAO {
   public Pedido consultarPorId(Long i) {
 		return em.find(Pedido.class, i);
 	}
-
 }

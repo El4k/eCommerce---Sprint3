@@ -32,7 +32,6 @@ public class Pedido {
 		this.valorTotal = valorTotal;
 		this.valorFrete = valorFrete;
 		this.prazoEntrega = prazoEntrega;
-		this.listaProdutos = listaProdutos;
 	}
 	
 	public Long getId() {
@@ -72,8 +71,12 @@ public class Pedido {
 		this.prazoEntrega = prazoEntrega;
 	}
 	
-	public void addProduto(Produto prod) {
-		listaProdutos.add(prod);
+	public void addProduto(Produto produto) {
+		this.listaProdutos.add(produto);
 	}
-	
+
+	public void removeProduto(Integer pos) {
+		Object produto = listaProdutos.get(pos);
+		listaProdutos.remove(produto);
+	}
 }

@@ -7,19 +7,24 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import pear.model.Usuario;
+
 public class TelaEntradaComAtributo implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession();
 		
+		HttpSession sessao = request.getSession();
 		
-		System.err.println("entrando no carrinho");
-		session.getAttribute("PedidoId");
-		session.getAttribute("produtos");
+		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
+		
+		if (usuario != null)
+			sessao.setAttribute("usuarioLogado", usuario);
+		
+		sessao.getAttribute("PedidoId");
+		sessao.getAttribute("produtos");
 		
 		return "forward:entrada.jsp";
 	}
-
 }

@@ -17,7 +17,7 @@ public class AddProduto implements Acao {
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		HttpSession session = request.getSession();
+		HttpSession sessao = request.getSession();
 //		Pedido pedido = (Pedido) session.getAttribute("pedido");
 		
 		PedidoController pedidoController = new PedidoController();
@@ -39,6 +39,7 @@ public class AddProduto implements Acao {
 		
 //		PedidoController pedidoController = new PedidoController();
 		pedidoController.atualizar(pedido);
+		sessao.setAttribute("pedido", pedido);
 		
 		return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
 		

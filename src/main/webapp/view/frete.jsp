@@ -24,27 +24,29 @@ label, input {
 input {
 	width: 200px;
 }
-width
-:
-200px
-;
- 
-}
 </style>
 </head>
 <body>
-	<h2>Dados da Compra</h2>
+	<c:import url="header.jsp" />
+	<h2>Dados do Usuario ${usuarioLogado.login}</h2>
 	<hr>
 	<br>
 	<c:if test="${not empty usuarioLogado}">
-		<fieldset>
-			<label for="html"><b>Rua: </b></label>${usuarioLogado.endereco.rua}<br>
-			<label for="html"><b>Numero: </b></label>${usuarioLogado.endereco.numero}<br>
-			<label for="html"><b>CEP: </b></label>${usuarioLogado.endereco.CEP}<br>
-			<label for="html"><b>Cidade: </b></label>${usuarioLogado.endereco.cidade}<br>
-			<label for="html"><b>Estado: </b></label>${usuarioLogado.endereco.estado}<br>
-		</fieldset>
+		<c:if test="${not empty pedido}">
+			<fieldset>
+				<label for="html"><b>Rua: </b></label>${usuarioLogado.endereco.rua}<br>
+				<label for="html"><b>Numero: </b></label>${usuarioLogado.endereco.numero}<br>
+				<label for="html"><b>CEP: </b></label>${usuarioLogado.endereco.CEP}<br>
+				<label for="html"><b>Cidade: </b></label>${usuarioLogado.endereco.cidade}<br>
+				<label for="html"><b>Estado: </b></label>${usuarioLogado.endereco.estado}<br>
+				<label for="html"><b>Frete: </b></label>${pedido.valorFrete}<br>
+				<label for="html"><b>Prazo: </b></label>${pedido.prazoEntrega}<br>
+				<label for="html"><b>ValorTotal: </b></label>${pedido.valorTotal}<br>
+			</fieldset>
+			<a
+				href="/ecommerce/pear?acao=TelaEntradaComAtributo&PedidoId=${pedido.id}"><input
+				type="submit" value="Voltar"></a>
+		</c:if>
 	</c:if>
-
 </body>
 </html>
