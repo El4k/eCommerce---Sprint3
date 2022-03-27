@@ -11,8 +11,9 @@ import pear.controller.EnderecoController;
 import pear.controller.UsuarioController;
 import pear.model.Endereco;
 import pear.model.Usuario;
+import pear.util.CorreiosUtil;
 
-public class Cadastro implements Acao {
+public class Atualizar implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
@@ -27,7 +28,7 @@ public class Cadastro implements Acao {
 		String paramCidade = request.getParameter("cidade");
 		String paramEstado = request.getParameter("estado");
 		String paramCEP = request.getParameter("CEP");
-		
+
 		Endereco CEPExiste = new Endereco();
 		EnderecoController enderecoController = new EnderecoController();
 		CEPExiste = enderecoController.buscaCEP(paramCEP);
@@ -37,7 +38,9 @@ public class Cadastro implements Acao {
 
 			UsuarioController usuarioController = new UsuarioController();
 
-			usuarioController.cadastrar(usuario);
+			usuarioController.atualizar(usuario);
+			
+			CorreiosUtil.executa(request, response);
 			sessao.setAttribute("usuarioLogado", usuario);
 		} else {
 
@@ -46,8 +49,10 @@ public class Cadastro implements Acao {
 
 			UsuarioController usuarioController = new UsuarioController();
 
-			enderecoController.cadastrar(endereco);
-			usuarioController.cadastrar(usuario);
+			enderecoController.atualizar(endereco);
+			usuarioController.atualizar(usuario);
+			
+			CorreiosUtil.executa(request, response);
 			sessao.setAttribute("usuarioLogado", usuario);
 		}
 		return "redirect:pear?acao=TelaIndex";
