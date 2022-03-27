@@ -66,6 +66,16 @@ public class Produto {
 		return "/ecommerce/pear?acao=RemoveProduto&produto=";
 	}
 	
+	public Long verificaEstoque(Long num) {
+		if(num <= getQuantidadeEstoque()) {
+			setQuantidadeEstoque(getQuantidadeEstoque()- num);
+			return getQuantidadeEstoque();
+		}else {
+			return null;
+		}
+	}
+	
+	
 //	@Override
 //	public String toString() {
 //		return "<div><b>Produto:</b> " + nomeProduto + " " + descricao + "<br>"

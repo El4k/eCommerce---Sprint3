@@ -46,5 +46,10 @@ public class ProdutoDAO {
 	public Produto consultarPorId(Long i) {
 		return em.find(Produto.class, i);
 	}
+
+	public Long buscaMaxID() {
+		String jpql = "SELECT MAX(p.id) FROM Produto p";
+		return em.createQuery(jpql, Long.class).getSingleResult();
+	}
 	
 }
