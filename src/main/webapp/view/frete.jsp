@@ -46,6 +46,9 @@ input {
 			<a
 				href="/ecommerce/pear?acao=TelaEntradaComAtributo&PedidoId=${pedido.id}"><input
 				type="submit" value="Voltar"></a>
+				<a
+				href="/ecommerce/pear?acao=TelaAtualizar"><input
+				type="submit" value="Atualizar Usuario"></a>
 		</c:if>
 	</c:if>
 </body>

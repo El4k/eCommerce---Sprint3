@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Cadastro de novo usuário</title>
+<title>Formulário</title>
 <style>
 label {
 	display: block;
@@ -24,7 +24,7 @@ input {
 <body>
 	<c:import url="header.jsp" />
 	<div class="card">
-		<h1>Formulário de Cadastro</h1>
+		<h1>Formulário de Dados</h1>
 		<div class="container-form">
 			<form action="${linkEntradaServlet}" method="post">
 				<fieldset>
