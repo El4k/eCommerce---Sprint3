@@ -31,7 +31,7 @@ public class Login implements Acao {
 			if(usuario != null) {
 				if ((Boolean) sessao.getAttribute("finalizar") == true) {
 					sessao.setAttribute("finalizar", false);
-					return "forward:finalizarCompra.jsp";
+					return "redirect:pear?acao=TelaFinalizar";
 				}
 				return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
 			}else {

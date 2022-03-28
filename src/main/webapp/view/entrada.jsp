@@ -3,6 +3,7 @@
 <%@ page import="java.util.List"%>
 <%@ page import="pear.model.Produto"%>
 <%@ page import="pear.model.Pedido"%>
+<%@ page import="pear.acao.AddProduto"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <!DOCTYPE html>
@@ -12,7 +13,7 @@
 <title>Entrada</title>
 </head>
 <body>
-	<c:import url="header.jsp"/>
+	<c:import url="header.jsp" />
 	<c:if test="${not empty produtos}">
 		<label for="html"><b>Lista de Produtos: </b></label>
 		<br>
@@ -20,11 +21,12 @@
 		<c:forEach items="${produtos}" var="produto">
 			<div>
 				<b>Produto:</b> ${ produto.nomeProduto} &nbsp ${produto.descricao }
-				<br> <b>Valor: R$</b> ${produto.valorProduto}
+				<br> <b>Valor: R$</b> ${produto.valorProduto} <br> <b>QuantidadeEstoque:
+				</b> ${produto.quantidadeEstoque}
 			</div>
 			<br>
 			<div>
-				<img src="${produto.imagem }" width=200 height=100>
+				<img src="${produto.imagem}" width=200 height=100>
 			</div>
 			<br>
 			<input type="hidden" name="ProdutoId" value="${produto.id}">

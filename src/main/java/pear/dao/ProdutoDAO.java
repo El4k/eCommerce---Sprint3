@@ -25,9 +25,8 @@ public class ProdutoDAO {
 
 	public void atualizar(Produto product) {
 		em.getTransaction().begin();
-		this.em.merge(product);
+		em.merge(product);
 		em.getTransaction().commit();
-		em.close();
 	}
 
 	public void remover(Produto product) {
@@ -45,6 +44,11 @@ public class ProdutoDAO {
 	
 	public Produto consultarPorId(Long i) {
 		return em.find(Produto.class, i);
+	}
+
+	public Long buscaMaxID() {
+		String jpql = "SELECT MAX(p.id) FROM Produto p";
+		return em.createQuery(jpql, Long.class).getSingleResult();
 	}
 	
 }

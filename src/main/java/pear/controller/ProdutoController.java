@@ -33,4 +33,8 @@ public class ProdutoController {
 		return this.produtoDAO.consultarPorId(i);
 	}
 	
+	public Long buscaMaiorID() {
+		return this.produtoDAO.buscaMaxID();
+	}
+	
 }
