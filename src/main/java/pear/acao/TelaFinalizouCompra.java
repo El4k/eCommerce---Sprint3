@@ -10,23 +10,18 @@ import javax.servlet.http.HttpSession;
 import pear.model.Usuario;
 import pear.util.CorreiosUtil;
 
-public class TelaLogin implements Acao {
+public class TelaFinalizouCompra implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		HttpSession sessao = request.getSession();
 		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
 		sessao.setAttribute("finalizar", false);
-		
-		if (usuario != null) {
-			sessao.setAttribute("usuarioLogado", usuario);
-			CorreiosUtil.executa(request, response);
-			return "forward:frete.jsp";
-		}
-		
-		return "forward:login.jsp";
+
+		CorreiosUtil.executa(request, response);
+		return "forward:finalizouCompra.jsp";
 	}
 
 }

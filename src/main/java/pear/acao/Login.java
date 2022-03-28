@@ -32,6 +32,8 @@ public class Login implements Acao {
 				sessao.setAttribute("finalizar", false);
 				return "redirect:pear?acao=TelaFinalizar";
 			}
+			if (sessao.getAttribute("pedido") == null)
+				return "redirect:pear?acao=TelaEntrada";
 			return "redirect:pear?acao=TelaEntradaComAtributo&PedidoId=" + pedido.getId();
 		} else {
 			return "forward:loginInvalido.jsp";

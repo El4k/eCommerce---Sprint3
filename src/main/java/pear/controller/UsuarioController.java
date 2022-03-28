@@ -1,7 +1,8 @@
 package pear.controller;
 
+import java.util.List;
+
 import pear.dao.UsuarioDAO;
-import pear.model.Endereco;
 import pear.model.Usuario;
 
 public class UsuarioController {
@@ -30,6 +31,10 @@ public class UsuarioController {
 	
 	public Usuario consultarId(Long id) {
 		return this.usuarioDAO.consultarId(id);
+	}
+
+	public List<Usuario> buscarTodos() {
+		return this.usuarioDAO.buscarTodos();
 	}
 	
 }
