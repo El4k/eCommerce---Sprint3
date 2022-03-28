@@ -11,16 +11,16 @@ import pear.controller.EnderecoController;
 import pear.controller.UsuarioController;
 import pear.model.Endereco;
 import pear.model.Usuario;
-import pear.util.CorreiosUtil;
 
 public class Atualizar implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		HttpSession sessao = request.getSession();
-		
+		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
+
 		String nomeCliente = request.getParameter("login");
 		String senhaCliente = request.getParameter("senha");
 		String paramRua = request.getParameter("rua");
@@ -30,30 +30,21 @@ public class Atualizar implements Acao {
 		String paramCEP = request.getParameter("CEP");
 		String paramBairro = request.getParameter("bairro");
 
-		Endereco CEPExiste = new Endereco();
+		usuario.setLogin(nomeCliente);
+		usuario.setSenha(senhaCliente);
+
+		Endereco enderecoNovo = new Endereco(paramRua, paramNumero, paramCidade, paramEstado, paramCEP, paramBairro);
 		EnderecoController enderecoController = new EnderecoController();
-		CEPExiste = enderecoController.buscaCEP(paramCEP);
 		
-		if (CEPExiste != null) {
-			Usuario usuario = new Usuario(nomeCliente, senhaCliente, CEPExiste);
+		usuario.setEndereco(enderecoNovo);
 
-			UsuarioController usuarioController = new UsuarioController();
-			usuarioController.atualizar(usuario);
-			CorreiosUtil.executa(request, response);
-			sessao.setAttribute("usuarioLogado", usuario);
-		} else {
+		UsuarioController usuarioController = new UsuarioController();
 
-			Endereco endereco = new Endereco(paramRua, paramNumero, paramCidade, paramEstado, paramCEP, paramBairro);
-			Usuario usuario = new Usuario(nomeCliente, senhaCliente, endereco);
+		enderecoController.cadastrar(enderecoNovo);
+		usuarioController.atualizar(usuario);
 
-			UsuarioController usuarioController = new UsuarioController();
-
-			enderecoController.atualizar(endereco);
-			usuarioController.atualizar(usuario);
-			
-			CorreiosUtil.executa(request, response);
-			sessao.setAttribute("usuarioLogado", usuario);
-		}
+		sessao.setAttribute("usuarioLogado", usuario);
+		
 		return "redirect:pear?acao=TelaLogin";
 	}
 
