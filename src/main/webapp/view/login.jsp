@@ -4,7 +4,7 @@
 <html>
 <body>
 	<c:import url="header.jsp" />
-	<h2>Bem-vindo ao nosso Teste!</h2>
+	<h2>Login</h2>
 
 	<form class='form' action="${linkEntradaServlet}" method="post">
 		<label for='client-login'>Login: </label> <input id='client-login'

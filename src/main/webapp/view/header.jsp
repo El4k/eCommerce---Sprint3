@@ -10,7 +10,7 @@
 		<a href="/ecommerce/pear?acao=TelaCarrinho"><input type="image"
 			src="http://www.agenciaeplus.com.br/wp-content/uploads/2017/09/carrinho.jpg"
 			width="70" height="70"></a><a
-			href="/ecommerce/pear?acao=TelaIndex"><input type="image"
+			href="/ecommerce/pear?acao=TelaLogin"><input type="image"
 			src="https://www.seekpng.com/png/full/138-1387775_login-to-do-whatever-you-want-login-icon.png"
 			width="70" height="70"></a>
 	</div>

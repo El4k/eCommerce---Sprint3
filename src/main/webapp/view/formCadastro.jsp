@@ -64,7 +64,7 @@ input {
 							type="submit" value="Cadastrar">
 					</div>
 					<div class="label-container">
-						<a href="${linkEntradaServlet}?acao=TelaIndex"> Voltar </a>
+						<a href="${linkEntradaServlet}?acao=TelaLogin"> Voltar </a>
 					</div>
 				</fieldset>
 			</form>

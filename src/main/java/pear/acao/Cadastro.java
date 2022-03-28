@@ -50,7 +50,7 @@ public class Cadastro implements Acao {
 			usuarioController.cadastrar(usuario);
 			sessao.setAttribute("usuarioLogado", usuario);
 		}
-		return "redirect:pear?acao=TelaIndex";
+		return "redirect:pear?acao=TelaLogin";
 	}
 
 }

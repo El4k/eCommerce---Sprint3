@@ -17,6 +17,6 @@ public class TelaAtualizar implements Acao {
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		return "forward:formCadastro.jsp";
+		return "forward:atualizar.jsp";
 	}
 }

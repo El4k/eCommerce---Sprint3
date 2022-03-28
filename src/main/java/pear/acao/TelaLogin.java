@@ -7,11 +7,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import pear.model.Pedido;
 import pear.model.Usuario;
 import pear.util.CorreiosUtil;
 
-public class TelaIndex implements Acao {
+public class TelaLogin implements Acao {
 
 	@Override
 	public String executa(HttpServletRequest request, HttpServletResponse response)
@@ -26,7 +25,7 @@ public class TelaIndex implements Acao {
 			return "forward:frete.jsp";
 		}
 		
-		return "forward:index.jsp";
+		return "forward:login.jsp";
 	}
 
 }

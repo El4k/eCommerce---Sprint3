@@ -22,9 +22,8 @@ public class PedidoDAO {
 
 	public void atualizar(Pedido order) {
 		em.getTransaction().begin();
-		this.em.merge(order);
+		em.merge(order);
 		em.getTransaction().commit();
-		em.close();
 	}
 
 	public void remover(Pedido order) {
