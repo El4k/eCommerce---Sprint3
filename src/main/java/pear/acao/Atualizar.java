@@ -28,6 +28,7 @@ public class Atualizar implements Acao {
 		String paramCidade = request.getParameter("cidade");
 		String paramEstado = request.getParameter("estado");
 		String paramCEP = request.getParameter("CEP");
+		String paramBairro = request.getParameter("bairro");
 
 		Endereco CEPExiste = new Endereco();
 		EnderecoController enderecoController = new EnderecoController();
@@ -42,7 +43,7 @@ public class Atualizar implements Acao {
 			sessao.setAttribute("usuarioLogado", usuario);
 		} else {
 
-			Endereco endereco = new Endereco(paramRua, paramNumero, paramCidade, paramEstado, paramCEP);
+			Endereco endereco = new Endereco(paramRua, paramNumero, paramCidade, paramEstado, paramCEP, paramBairro);
 			Usuario usuario = new Usuario(nomeCliente, senhaCliente, endereco);
 
 			UsuarioController usuarioController = new UsuarioController();

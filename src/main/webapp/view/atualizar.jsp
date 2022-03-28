@@ -47,6 +47,10 @@ input {
 							type="number">
 					</div>
 					<div class="label-container">
+						<label for='client-district'>Bairro: </label> <input id='client-district'
+							placeholder="Bairro" name="bairro" required>
+					</div>
+					<div class="label-container">
 						<label for='client-city'>Cidade: </label> <input id='client-city'
 							placeholder="Cidade" name="cidade">
 					</div>

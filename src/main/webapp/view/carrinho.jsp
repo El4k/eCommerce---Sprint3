@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="view/entrada.css">
 <meta charset="ISO-8859-1">
 <title>Carrinho de Compras</title>
 </head>
