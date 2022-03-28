@@ -18,16 +18,18 @@ public class Endereco {
 	private Integer numero;
 	private String cidade;
 	private String estado;
+	private String bairro;
 	
 	public Endereco() {
 	}
 	
-	public Endereco(String paramRua, Integer numero, String paramCidade, String paramEstado, String paramCEP) {
+	public Endereco(String paramRua, Integer numero, String paramCidade, String paramEstado, String paramCEP, String paramBairro) {
 		this.rua = paramRua;
 		this.numero = numero;
 		this.cidade = paramCidade;
 		this.estado = paramEstado;
 		this.CEP = paramCEP;
+		this.setBairro(paramBairro);
 	}
 
 	public Long getId() {
@@ -75,5 +77,13 @@ public class Endereco {
 	}
 	public void setEstado(String estado) {
 		this.estado = estado;
+	}
+
+	public String getBairro() {
+		return bairro;
+	}
+
+	public void setBairro(String bairro) {
+		this.bairro = bairro;
 	}
 }

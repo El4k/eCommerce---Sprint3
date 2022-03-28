@@ -31,6 +31,7 @@ public class TelaEntrada implements Acao {
 		sessao.setAttribute("pedido", pedido);
 		sessao.setAttribute("produtos", produtos);
 		sessao.setAttribute("estoqueAcima", true);
+		sessao.setAttribute("finalizar", false);
 		
 		return "forward:entrada.jsp";
 	}

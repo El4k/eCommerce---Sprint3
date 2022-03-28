@@ -1,5 +1,7 @@
 package pear.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 
 import pear.model.Usuario;
@@ -44,6 +46,11 @@ public class UsuarioDAO {
 			System.err.println("Usuário não encontrado!");
 			return null;
 		}
+	}
+	
+	public List<Usuario> buscarTodos() {
+		String jpql = "SELECT u FROM Usuario u";
+		return em.createQuery(jpql, Usuario.class).getResultList();
 	}
 	
 	public Usuario consultarId(Long id) {
