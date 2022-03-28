@@ -20,7 +20,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import pear.controller.PedidoController;
-import pear.controller.UsuarioController;
 import pear.model.Pedido;
 import pear.model.Usuario;
 
