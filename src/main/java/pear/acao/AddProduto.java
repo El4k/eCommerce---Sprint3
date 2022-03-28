@@ -35,6 +35,12 @@ public class AddProduto implements Acao {
 		ProdutoController produtoController = new ProdutoController();
 
 		produto = produtoController.consultarPorId(idProd);
+
+		if (pedido.getValorTotal() == 0.0) {
+			pedido.setValorTotal(produto.getValorProduto());
+		} else {
+			pedido.setValorTotal(pedido.getValorTotal() + produto.getValorProduto());
+		}
 		pedido.addProduto(produto);
 
 		int quantidadePedido = 0;

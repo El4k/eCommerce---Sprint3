@@ -18,7 +18,7 @@ public class Pedido {
 	@Id @GeneratedValue(strategy= GenerationType.IDENTITY)
 	private Long id;
 	@ManyToOne
-	private Usuario user;
+	private Usuario usuario;
 	@ManyToMany
 	private List<Produto> listaProdutos = new ArrayList<>();
 	private double valorTotal;
@@ -40,11 +40,11 @@ public class Pedido {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Usuario getUser() {
-		return user;
+	public Usuario getUsuario() {
+		return usuario;
 	}
-	public void setUser(Usuario user) {
-		this.user = user;
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	public List<Produto> getListaProdutos() {
 		return listaProdutos;

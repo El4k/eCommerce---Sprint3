@@ -37,9 +37,7 @@ public class Atualizar implements Acao {
 			Usuario usuario = new Usuario(nomeCliente, senhaCliente, CEPExiste);
 
 			UsuarioController usuarioController = new UsuarioController();
-
 			usuarioController.atualizar(usuario);
-			
 			CorreiosUtil.executa(request, response);
 			sessao.setAttribute("usuarioLogado", usuario);
 		} else {
@@ -55,7 +53,7 @@ public class Atualizar implements Acao {
 			CorreiosUtil.executa(request, response);
 			sessao.setAttribute("usuarioLogado", usuario);
 		}
-		return "redirect:pear?acao=TelaIndex";
+		return "redirect:pear?acao=TelaLogin";
 	}
 
 }

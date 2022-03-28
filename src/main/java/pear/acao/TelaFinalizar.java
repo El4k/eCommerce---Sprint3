@@ -24,12 +24,12 @@ public class TelaFinalizar implements Acao {
 		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
 		if (usuario == null) {
 			sessao.setAttribute("finalizar", true);
-			return "forward:index.jsp";
+			return "forward:login.jsp";
 		}
 
 		// implementação da função
 		Pedido pedido = (Pedido) sessao.getAttribute("pedido");
-		//PedidoController pedidoController = new PedidoController();
+		PedidoController pedidoController = new PedidoController();
 		//pedido = pedidoController.consultarPorId(pedido.getId());
 		ProdutoController produtoController = new ProdutoController();
 		// final da implementação da função
@@ -56,8 +56,10 @@ public class TelaFinalizar implements Acao {
 			if (verifica == null && num != 0l) {
 				return "forward:deuRuim.jsp";
 			} else {
+				pedido.setUsuario(usuario);
 				produto.setQuantidadeEstoque(verifica);
 				produtoController.atualizar(produto);
+				pedidoController.atualizar(pedido);
 				System.err.println("Teste de estoque: " + verifica);
 				System.out.println("Estoque: " + produto.getQuantidadeEstoque());
 			}
@@ -65,6 +67,7 @@ public class TelaFinalizar implements Acao {
 
 		// final da função
 		sessao.setAttribute("usuarioLogado", usuario);
+		sessao.setAttribute("pedido", pedido);
 		return "forward:finalizarCompra.jsp";
 	}
 }
