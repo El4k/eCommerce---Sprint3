@@ -17,6 +17,10 @@ public class TelaAtualizar implements Acao {
 	public String executa(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		HttpSession sessao = request.getSession();
+		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
+		sessao.setAttribute("usuarioLogado", usuario);
+		
 		return "forward:atualizar.jsp";
 	}
 }
