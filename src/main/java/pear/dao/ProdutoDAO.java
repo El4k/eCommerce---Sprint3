@@ -25,9 +25,8 @@ public class ProdutoDAO {
 
 	public void atualizar(Produto product) {
 		em.getTransaction().begin();
-		this.em.merge(product);
+		em.merge(product);
 		em.getTransaction().commit();
-		em.close();
 	}
 
 	public void remover(Produto product) {

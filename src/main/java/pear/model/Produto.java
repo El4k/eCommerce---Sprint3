@@ -61,14 +61,11 @@ public class Produto {
 	public void setQuantidadeEstoque(Long quantidadeEstoque) {
 		this.quantidadeEstoque = quantidadeEstoque;
 	}
-
-	public String criaLink () {
-		return "/ecommerce/pear?acao=RemoveProduto&produto=";
-	}
 	
-	public Long verificaEstoque(Long num) {
-		if(num <= getQuantidadeEstoque()) {
-			setQuantidadeEstoque(getQuantidadeEstoque()- num);
+	public Long verificaEstoque(Long produtosNoCarrinho) {
+		if(produtosNoCarrinho <= getQuantidadeEstoque()) {
+			setQuantidadeEstoque(getQuantidadeEstoque() - produtosNoCarrinho);
+			System.err.println(getQuantidadeEstoque());
 			return getQuantidadeEstoque();
 		}else {
 			return null;

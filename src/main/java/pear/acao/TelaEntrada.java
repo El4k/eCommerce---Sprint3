@@ -20,16 +20,17 @@ public class TelaEntrada implements Acao {
 			throws ServletException, IOException {
 		
 		HttpSession sessao = request.getSession();
+		
 		ProdutoController produtoController = new ProdutoController();
 		List<Produto> produtos = produtoController.buscaTodos();
-		String estadoPedido = "criado";
+
 		Pedido pedido = new Pedido(0,0,0);
 		PedidoController pedidoController = new PedidoController();
 		pedidoController.cadastrar(pedido);
 		
 		sessao.setAttribute("pedido", pedido);
 		sessao.setAttribute("produtos", produtos);
-		sessao.setAttribute("estadoPedido", estadoPedido);
+		sessao.setAttribute("estoqueAcima", true);
 		
 		return "forward:entrada.jsp";
 	}
