@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" href="view/entrada.css">
 <meta charset="ISO-8859-1">
 <title>Finalizando Compra</title>
 <style>

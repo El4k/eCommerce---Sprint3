@@ -10,34 +10,37 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
+<link rel="stylesheet" href="view/entrada.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <title>Entrada</title>
 </head>
 <body>
 	<c:import url="header.jsp" />
 	<c:if test="${not empty produtos}">
-		<label for="html"><b>Lista de Produtos: </b></label>
+		<label for="html"><span>Lista de Produtos: </span></label>
 		<br>
 		<hr>
 		<c:forEach items="${produtos}" var="produto">
 			<div>
-				<b>Produto:</b> ${ produto.nomeProduto} &nbsp ${produto.descricao }
-				<br> <b>Valor: R$</b> ${produto.valorProduto} <br> <b>QuantidadeEstoque:
-				</b> ${produto.quantidadeEstoque}
+				<p>Produto: ${ produto.nomeProduto} &nbsp ${produto.descricao }</p>
+				<p>Valor: R$ ${produto.valorProduto}</p>
+        <p>QuantidadeEstoque: ${produto.quantidadeEstoque}</p>
 			</div>
-			<br>
 			<div>
 				<img src="${produto.imagem}" width=200 height=100>
 			</div>
-			<br>
 			<input type="hidden" name="ProdutoId" value="${produto.id}">
-			<a
-				href="/ecommerce/pear?acao=AddProduto&PedidoId=${pedido.id}&produto=${produto.id}"><input
-				type="submit" value="Adicionar"></a>
-			<hr>
+			<a href="/ecommerce/pear?acao=AddProduto&PedidoId=${pedido.id}&produto=${produto.id}" id="botao">
+        <input type="submit" value="Adicionar">
+      </a>
+      		<hr>
 			<br>
 		</c:forEach>
 		<br>
 	</c:if>
+  <hr>
 	<br>
 	<br>
 	<br>
