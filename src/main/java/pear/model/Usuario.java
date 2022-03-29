@@ -17,8 +17,6 @@ public class Usuario {
 	private String senha;
 	@ManyToOne
 	private Endereco endereco;
-	@ManyToOne
-	private Produto produto;
 	
 	public Usuario() {
 	}
@@ -59,14 +57,6 @@ public class Usuario {
 
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
-	}
-
-	public Produto getProduto() {
-		return produto;
-	}
-
-	public void setProduto(Produto produto) {
-		this.produto = produto;
 	}
 	
 }

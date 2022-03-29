@@ -16,6 +16,6 @@
 			type="hidden" name=acao value=Login> <input type="submit"
 			value="Entrar">
 	</form>
-	<a href="${linkEntradaServlet}?acao=TelaCadastro"> Cadastrar </a>
+	<a href="${linkEntradaServlet}?acao=TelaCadastro"><input type="button" value="Cadastrar"> </a>
 </body>
 </html>

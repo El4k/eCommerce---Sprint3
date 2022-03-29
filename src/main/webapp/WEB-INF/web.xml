@@ -6,6 +6,14 @@
 	<display-name>Archetype Created Web Application</display-name>
 	
 	<filter>
+		<filter-name>AF</filter-name>
+		<filter-class>pear.servlet.AutorizacaoFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>AF</filter-name>
+		<url-pattern>/pear</url-pattern>
+	</filter-mapping>
+	<filter>
 		<filter-name>CF</filter-name>
 		<filter-class>pear.servlet.ControladorFilter</filter-class>
 	</filter>
