@@ -22,19 +22,12 @@ public class TelaFinalizar implements Acao {
 
 		HttpSession sessao = request.getSession();
 		Usuario usuario = (Usuario) sessao.getAttribute("usuarioLogado");
-		if (usuario == null) {
-			sessao.setAttribute("finalizar", true);
-			return "forward:login.jsp";
-		}
 
-		// implementação da função
 		Pedido pedido = (Pedido) sessao.getAttribute("pedido");
 		PedidoController pedidoController = new PedidoController();
-		//pedido = pedidoController.consultarPorId(pedido.getId());
+		
 		ProdutoController produtoController = new ProdutoController();
-		// final da implementação da função
 
-		// início da função
 		List<Produto> produtos = pedido.getListaProdutos();
 		Long maiorID = produtoController.buscaMaiorID();
 		System.err.println("pegando o maior id " + maiorID);
@@ -65,7 +58,6 @@ public class TelaFinalizar implements Acao {
 			}
 		}
 
-		// final da função
 		sessao.setAttribute("usuarioLogado", usuario);
 		sessao.setAttribute("pedido", pedido);
 		return "forward:finalizarCompra.jsp";

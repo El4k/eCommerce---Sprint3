@@ -19,7 +19,6 @@ public class AddProduto implements Acao {
 			throws ServletException, IOException {
 
 		HttpSession sessao = request.getSession();
-//		Pedido pedido = (Pedido) session.getAttribute("pedido");
 		sessao.setAttribute("estoqueAcima", false);
 
 		PedidoController pedidoController = new PedidoController();
