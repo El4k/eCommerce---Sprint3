@@ -45,5 +45,5 @@ A empresa Pear Compass LTDA quer expandir seu negócio para o mundo digital, des
 
 ## Autores
 
-| [<img src="https://avatars.githubusercontent.com/u/57332066?v=4" width=115><br><sub>Emílio Araújo de Lima</sub>](https://github.com/El4k) |  [<img src="https://avatars.githubusercontent.com/u/71047456?v=4" width=115><br><sub>Alexandre Abib</sub>](https://github.com/AleAbib) |  [<img src="https://avatars.githubusercontent.com/u/97471753?v=4" width=115><br><sub>Pedro</sub>](https://github.com/PedroHND) |
+| [<img src="https://avatars.githubusercontent.com/u/57332066?v=4" width=115><br><sub>Emílio Araújo de Lima</sub>](https://github.com/El4k) |  [<img src="https://avatars.githubusercontent.com/u/71047456?v=4" width=115><br><sub>Alexandre Abib Assis</sub>](https://github.com/AleAbib) |  [<img src="https://avatars.githubusercontent.com/u/97471753?v=4" width=115><br><sub>Pedro Henrique Nunes Dutra</sub>](https://github.com/PedroHND) |
 | :---: | :---: | :---: |
