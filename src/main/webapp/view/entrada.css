@@ -18,7 +18,7 @@ span{
 }
 
 p{
-  font-size: 24px;
+  font-size: 18px;
 }
 
 a input[type="submit"]{
@@ -29,6 +29,25 @@ a input[type="submit"]{
   border: none;
   background-color: #038fd593;
   color: white;
+}
+a input[type="button"]{
+	width: 150px;
+  	height: 30px;
+  	font-size: 14px;
+  	font-weight: bold;
+  	border: none;
+  	background-color: rgb(128, 128, 128);
+  	color: white;
+}
+
+input[type="submit"]{
+	width: 150px;
+  	height: 30px;
+  	font-size: 14px;
+  	font-weight: bold;
+  	border: none;
+  	background-color: rgb(128, 128, 128);
+  	color: white;
 }
 
 hr{

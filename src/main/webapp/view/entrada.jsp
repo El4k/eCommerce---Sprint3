@@ -24,12 +24,12 @@
 		<hr>
 		<c:forEach items="${produtos}" var="produto">
 			<div>
+				<img src="${produto.imagem}" width=200 height=100>
+			</div>
+			<div>
 				<p>Produto: ${ produto.nomeProduto} &nbsp ${produto.descricao }</p>
 				<p>Valor: R$ ${produto.valorProduto}</p>
         <p>QuantidadeEstoque: ${produto.quantidadeEstoque}</p>
-			</div>
-			<div>
-				<img src="${produto.imagem}" width=200 height=100>
 			</div>
 			<input type="hidden" name="ProdutoId" value="${produto.id}">
 			<a href="/ecommerce/pear?acao=AddProduto&PedidoId=${pedido.id}&produto=${produto.id}" id="botao">
