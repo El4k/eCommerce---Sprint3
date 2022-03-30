@@ -36,7 +36,8 @@ A empresa Pear Compass LTDA quer expandir seu negócio para o mundo digital, des
 - Por fim clique em OK
 - É necessário uma conexão com o MySQL Workbench para que seja utilizado o banco de dados que está integrado ao nosso projeto. (Atualize o persistence com seus dados)
 - **Caso já tenha o MySQL instalado** utilize o seguinte <a href="https://drive.google.com/file/d/1DoYIqmDkWx-Ur65aYaAz3azBGx7N0YJN/view?usp=sharing">SQL<a/>.
-
+- Para subir o código para web é necessário utilizar o TomCat 9.0.58 rodando no Java 11, caso não tenha o TomCat específico em sua máquina  <a href="https://drive.google.com/drive/folders/1uloXY-KGsWzImHNayGzJeNsmFWWac5p_?usp=sharing">clique aqui<a/>.
+  
 ## ✔️ Técnicas e tecnologias utilizadas
 
 - ``Java 11``
