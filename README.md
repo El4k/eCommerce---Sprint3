@@ -43,6 +43,8 @@ A empresa Pear Compass LTDA quer expandir seu negócio para o mundo digital, des
 - ``Java 11``
 - ``Eclipse``
 - ``Paradigma de orientação a objetos``
+- ``MySQL Workbench``
+- ``Apache TomCat``
 
 ## Autores
 
