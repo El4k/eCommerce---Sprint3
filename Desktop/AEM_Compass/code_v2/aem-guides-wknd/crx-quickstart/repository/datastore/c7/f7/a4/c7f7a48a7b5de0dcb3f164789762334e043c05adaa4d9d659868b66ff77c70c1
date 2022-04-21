@@ -1,0 +1,598 @@
+/*
+ * ADOBE CONFIDENTIAL
+ *
+ * Copyright 2014 Adobe Systems Incorporated
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of Adobe Systems Incorporated and its suppliers,
+ * if any.  The intellectual and technical concepts contained
+ * herein are proprietary to Adobe Systems Incorporated and its
+ * suppliers and may be covered by U.S. and Foreign Patents,
+ * patents in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Adobe Systems Incorporated.
+ */
+
+ (function (hobs, $, ns, channel, window, undefined) {
+     'use strict';
+
+     var self = {};
+
+        /**
+         * Recursively build the list of TestSuites.
+         * @param parent DOM element to append the list of TestSuites
+         * @param testSuites Array of Hobbes.js TestSuite Objects
+         */
+     function buildTestSuiteTree(parent, testSuites) {
+         for (var i = 0; i < testSuites.length; i++) {
+             buildTestSuiteItem(parent, testSuites[i]);
+         }
+     }
+
+        /**
+         * Build TestSuite item in the tree.
+         * @param list DOM element to append the TestSuite
+         * @param testSuite Hobbes.js TestSuite Object
+         */
+     function buildTestSuiteItem(list, testSuite) {
+         var testCases = testSuite.getTestCases(),
+            //     $item = $("<li class='coral-Collapsible coral-Collapsible--block' data-init='accordion'/>")
+            //         .data("testSuite", testSuite),
+            //     $heading = $("<h3 class='coral-Collapsible-header'/>")
+            //         .append($("<i/>"))
+            //         .append($('<span class="coral-Collapsible-title"/>').text(testSuite.name)),
+            //     $content = $("<div class='coral-Collapsible-content'/>");
+            //
+            // $item.append($heading);
+            // $item.append($content);
+
+             accordion = new Coral.Accordion().set({
+                 variant: 'large'
+             });
+
+         $(accordion).data('testSuite', testSuite);
+
+         accordion.items.add({
+             label: {
+                 innerHTML: testSuite.name
+             },
+             content: {
+                 innerHTML: ''
+             },
+             disabled: false
+         });
+
+
+         if (testCases.length > 0) {
+             accordion.items.getAll()[0].label.innerHTML += ' <span class="">(' + testCases.length + ')</span>';
+//                $heading.append($("<span class='coral-Collapsible-subtitle'/>").text('(' + testCases.length + ')'));
+
+             buildTestCasesList(accordion.items.getAll()[0].content, testCases);
+         }
+
+         var $actions = $('<div class="testsuite-item-actions"/>'),
+             /*eslint max-len: ["error", 200]*/
+             $runTestSuiteBtn = $('<button class="coral-Button coral-Button--quiet" variant="minimal" class="cq-DeveloperRail-actionTrigger js-run-testsuite"></button>')
+                    .text(Granite.I18n.get('Run tests'))
+                    .prepend($('<i class="coral-Icon coral-Icon--playCircle"></i>')),
+             $editTestSuiteBtn = $('<button class="coral-Button coral-Button--quiet" variant="minimal"  class="cq-DeveloperRail-actionTrigger"></button>')
+                    .text(Granite.I18n.get('Edit'))
+                    .prepend($('<i class="coral-Icon coral-Icon--editCircle"></i>'));
+
+                // $demoModeBtn = $("<a class='coral-Icon coral-Icon--viewOn coral-Icon--sizeS cq-DeveloperRail-actionTrigger js-toggle-demo-mode'/>")
+                //     .attr("title", Granite.I18n.get("Demo Mode - Slow Execution"));
+
+         self.setupEditLink($editTestSuiteBtn, testSuite.options().path);
+
+         $actions.append($runTestSuiteBtn).append($editTestSuiteBtn)/*.append($demoModeBtn)*/;
+
+         $(accordion.items.getAll()[0].content).prepend($actions);
+
+            //
+         list.append(accordion);
+
+         $runTestSuiteBtn.on('click', testSuite, function(event) {
+             var ts = event.data;
+
+             if (ts.state() === hobs.Chaining.Step.STATE_RUNNING) {
+                 hobs.cancelRun();
+             }
+             else {
+                 var options = null;
+
+                 if ($(this).siblings('.js-toggle-demo-mode').hasClass('is-active')) {
+                     options = {
+                         demoMode: true,
+                         delay: 1000
+                     };
+                 }
+
+                 hobs.runTest(ts.uuid, null, options);
+             }
+         });
+
+         $(hobs).on(hobs.TESTSUITE_STARTED, testSuite, function(event, eTestSuite) {
+             if(event.data.uuid === eTestSuite.uuid) {
+                 $(accordion).data('testSuite', eTestSuite);
+                 $runTestSuiteBtn.find('i').removeClass('coral-Icon--playCircle').addClass('coral-Icon--stopCircle');
+             }
+         });
+
+         $(hobs).on(hobs.TESTSUITE_FINISHED, testSuite, function(event, eTestSuite) {
+             if(event.data.uuid === eTestSuite.uuid) {
+                 $(accordion.items.getAll()[0])
+                 .find('> [handle="header"] [handle="icon"]')
+                 .addClass(eTestSuite.state() === hobs.Chaining.Step.STATE_PASSED ? 'is-passed' : 'is-failed');
+             }
+         });
+
+            // $(hobs).on(hobs.TESTCASE_FINISHED, {icon: $icon, testsuite: testSuite}, function(evt, eTestcase) {
+            //     if (evt.data.testcase == eTestcase) {
+            //         self.evtData = evt.data;
+            //
+            //         setTimeout(function() {
+            //             $icon.removeClass("coral-Icon--pauseCircle is-running")
+            //                 .addClass(eTestcase.result().passed ? "coral-Icon--checkCircle is-passed" : "coral-Icon--closeCircle is-failed");
+            //         }, 50);
+            //     }
+            // });
+
+         $(hobs).on(hobs.RUN_FINISHED, testSuite, function(event, eTestSuite) {
+                // if(event.data == eTestSuite) {
+             $runTestSuiteBtn.find('i').removeClass('coral-Icon--stopCircle').addClass('coral-Icon--playCircle');
+                // }
+         });
+     }
+
+        /**
+         * Build list-item representing a component in the tree.
+         * @param $item TestSuite component to append the TestCases components
+         * @param testCases Array of Hobbes.js TestCase Objects
+         */
+     function buildTestCasesList($item, testCases) {
+         var $list = $('<ul class="cq-Tree-level" />');
+
+         for (var i=0; i < testCases.length; i++) {
+             if (hobs.TestCase.prototype.isPrototypeOf(testCases[i])) {
+                 buildTestCaseItem($list, testCases[i]);
+             }
+             else if (hobs.TestSuite.prototype.isPrototypeOf(testCases[i])) {
+                 buildTestSuiteItem($list, testCases[i]);
+             }
+         }
+
+         $($item).append($list);
+     }
+
+        /**
+         * Build list-item representing a component in the tree.
+         * @param $list
+         * @param testCase
+         */
+     function buildTestCaseItem($list, testCase) {
+         var $item = $('<li class=\'cq-Tree-item\'/>'),
+             $heading = $('<h3 class=\'cq-Tree-itemHeader js-test-details-activator\'></h3>'),
+             $icon = $('<i class=\'coral-Icon coral-Icon--playCircle coral-Icon--sizeXS cq-TestCase-flag\'/>'),
+             $title = $('<span title=\'' + testCase.name + '\'>' + testCase.name + '</span>'),
+             $detailsBtn = $('<i class=\'coral-Icon coral-Icon--chevronRight coral-Icon--sizeXS u-coral-pullRight\'/>')
+                    .attr('title', Granite.I18n.get('View Details'));
+
+         $item.data('testCase', testCase);
+
+         $heading.append($detailsBtn)
+                .append($icon)
+                .append($title);
+         $item.append($heading);
+         $list.append($item);
+
+         $(hobs).on(hobs.TESTCASE_STARTED, testCase, function(evt, eTestcase) {
+             if (evt.data.uuid === eTestcase.uuid) {
+                 $item.data('testCase', eTestcase);
+                 $icon.removeClass('coral-Icon--playCircle coral-Icon--checkCircle coral-Icon--closeCircle is-passed is-failed')
+                        .addClass('coral-Icon--pauseCircle is-running');
+             }
+         });
+
+         $(hobs).on(hobs.TESTCASE_FINISHED, {icon: $icon, testcase: testCase}, function(evt, eTestcase) {
+             if (evt.data.testcase.uuid === eTestcase.uuid) {
+                 self.evtData = evt.data;
+
+                 setTimeout(function() {
+                     $icon.removeClass('coral-Icon--pauseCircle is-running')
+                            .addClass(eTestcase.state() === hobs.Chaining.Step.STATE_PASSED ?
+                            'coral-Icon--checkCircle is-passed'
+                            :
+                            'coral-Icon--closeCircle is-failed');
+                 }, 50);
+             }
+         });
+     }
+
+     function updateTestsResultPanel(testcase, forceDisplay) {
+         var $testsResultList = self.$testsResult.find('.testrunner-results-container ul.testrunner-results-list');
+                // result = testcase.result();
+
+         $(self.$testsResult).data('testcase', testcase);
+
+         if (forceDisplay) {
+             self.$testsResult.animate({'margin-left': 0});
+         } else {
+             closeResultPanel();
+         }
+
+         $testsResultList.empty();
+         $('coral-tooltip.testaction-parameter-tt').remove();
+
+         var stepIdx = 0;
+
+         function getStepsResult(result, $el, hidePassedSteps) {
+             stepIdx++;
+                // if (!result.msg) {
+                //     return $el;
+                // }
+
+             if (result === null) {
+                 return $el;
+             }
+
+             var $li = $('<li/>'),
+                 msg = '',
+                 $icon = $('<coral-icon class=\'cq-TestCase-flag\' size=\'XS\'/>')
+                        .attr('icon', result.state === hobs.Chaining.Step.STATE_STOPPED ? 'circle' : (result.passed ? 'checkCircle' : 'closeCircle'))
+                        .addClass((result.state === hobs.Chaining.Step.STATE_STOPPED ?'' : result.passed ? 'is-passed' : 'is-failed')),
+                 $optIcon = $('<coral-icon class=\'opt-tt-' + stepIdx + ' cq-TestCase-flag\' icon=\'branchCircle\' size=\'XS\'/>'),
+                 $message = $('<span class=\'cq-TestCase-step u-preFormatted\'/>');
+
+             if (result.type === hobs.TestSuite.prototype.type || result.type === hobs.TestCase.prototype.type) {
+                 msg = result.name;
+             }
+
+                /** TODO - FIX OPTIONS !! **/
+                // if (result.execData && result.execData.data && result.execData.data.options && !$.isEmptyObject(result.execData.data.options)) {
+                //     $('body').append('<coral-tooltip class="testaction-parameter-tt" placement="right" target="opt-tt-' +
+                //     stepIdx + '"><pre>' + JSON.stringify(result.execData.data.options, null, '\t') + '</pre></coral-tooltip>');
+                // }
+
+             if (result.report
+                    && result.report.params
+                    && result.report.msg
+                    )
+                {
+                 $message.html(window.parseResultMsgParams(result.report, stepIdx));
+             }
+             else if (result.state === hobs.Chaining.Step.STATE_STOPPED) {
+                 $message.html(result.type);
+             }
+             else {
+                 $message.html(msg);
+             }
+
+                /** TODO - FIX OPTIONS !! **/
+                // if (result.state === hobs.Chaining.Step.STATE_STOPPED || !result.execData.hasOwnProperty('data')
+                //    || (result.execData && result.execData.data && result.execData.data.options == null)
+                //    || $.isEmptyObject(result.execData.data.options)) {
+                //     $optIcon.addClass('is-disabled');
+                // }
+                // else if (result.execData && result.execData.data && !$.isEmptyObject(result.execData.data.options)) {
+                //     $optIcon.addClass('with-children');
+                // }
+
+             if (result.phase) {
+                 $li.addClass(result.phase);
+
+                 if(result.phase === 'before') {
+                     $icon = $('<i class=\'cq-TestCase-flag coral-Icon coral-Icon--textSpaceBefore coral-Icon--sizeXS\'/>')
+                      .addClass(result.passed ? 'is-passed' : 'is-failed');
+                 }
+                 else if(result.phase === 'after') {
+                     $icon = $('<i class=\'cq-TestCase-flag coral-Icon coral-Icon--textSpaceAfter coral-Icon--sizeXS\'/>')
+                      .addClass(result.passed ? 'is-passed' : 'is-failed');
+                 }
+             }
+
+             $li.append($icon).append($optIcon);
+
+             $li.append($message);
+
+             if (result.hasOwnProperty('steps') && result.steps.length > 0) {
+                 var $ul = $('<ul/>');
+
+                 if (hidePassedSteps && result.passed) {
+                     $ul.hide();
+                 }
+
+                 for (var i=0; i< result.steps.length; i++) {
+                     if (hidePassedSteps || result.steps[i].phase) {
+                         getStepsResult(result.steps[i], $ul, true);
+                     }
+                 }
+
+                 $li.on('tap click', function(evt) {
+                     evt.stopPropagation();
+
+                     if (evt.altKey) {
+                         $(this).find('ul').toggle(!$(this).find('ul').eq(0).is(':visible'));
+                     } else {
+                         $(this).children('ul').toggle();
+                     }
+                 });
+
+                 $icon.addClass('with-children'); // make it visible that it is possible to interact with the icon.
+
+                 $li.append($ul);
+             }
+
+             $el.append($li);
+
+             return $el;
+         }
+
+         getStepsResult(testcase.result(), $testsResultList, true);
+
+            // for (var i=0; i< testChain.steps().length; i++) {
+            //     getStepsResult(testChain.steps()[i].result(), $testsResultList, true);
+            // }
+
+            // /*var $result = */ getStepsResult(result, $testsResultList, false);
+
+         $('coral-tooltip.testaction-parameter-tt').each(function(index) {
+             $(this).attr('target', '.'+ $(this).attr('target'));
+         });
+
+            //$testsResultList.append($result);
+     }
+
+     function closeResultPanel() {
+         var leftMargin = '-' + self.$testsResult.width();
+
+         self.$testsResult.animate({
+             'margin-left': leftMargin
+         });
+
+         $(self.$testsResult).data('testcase', null);
+     }
+
+        // /**
+        //  * Instantiate the CoralUI widgets on a built tree.
+        //  *
+        //  * This is a separate step primarily because the widgets must be built from the bottom-up or the
+        //  * calculated heights of the collapsed accordion elements will be wrong.
+        //  *
+        //  * @param $item
+        //  */
+        // function instantiateCoralWidgets($item) {
+        //     $(".coral-Collapsible").each(function(i, item) {
+		// 		new CUI.Accordion({ element:item });
+		// 	});
+        // }
+
+        /**
+         * Setup an <a> element to open an editor for the given path.
+         * <p>
+         * By default it produces hrefs which open the files in CRXDE|Lite in a new browser tab.
+         * <p>
+         * Other locations/schemes can be specified by supplying a URL template in the current user's
+         * (or simulated user's) developer preferences (<code>~/developer/editorUrlTemplate</code>).
+         * <p>
+         * URL template resolution supports two variables:
+         * <dl>
+         *     <dt><code>{filepath}</code></dt>
+         *     <dd>The absolute path within the repository.</dd>
+         *     <dt><code>{instanceId}</code></dt>
+         *     <dd>The Sling instance id.</dd>
+         * </dl>
+         * <p>
+         * @param $a A jQuery object representing the <a> to setup with the editor link
+         * @param path The path to the resource to be edited
+         */
+     self.setupEditLink = function($a, path) {
+         var editorUrlTemplate = '/crx/de/index.jsp#{filepath}';
+
+         if (!path) {
+             $a.attr('disabled', '');
+             return;
+         }
+
+            // encode :'s in path:
+         path = path.replace(/:/g, '%3A');
+
+         var href = editorUrlTemplate.replace(/\{filepath\}/g, path);
+         href = Granite.HTTP.externalize(href);
+
+         $a.attr('data-href', href);
+
+         $a.click(function() {
+             window.open($(this).attr('data-href'));
+         });
+     };
+
+        /**
+         * Build out the testsuite tree.
+         */
+     self.build = function() {
+            // Init UI
+         self.$testrunner = $('#testrunner');
+         self.$testingSidePanel = $('.ui-testing-side-panel');
+         self.$testsResult = $('.ui-testing-side-panel.result-panel');
+         self.$testsuiteTree = self.$testrunner.find('.js-test-list');
+         self.$runAllTestsBtn = $('.js-hobbes-run-all-tests');
+
+         var testSuites = hobs.getRegisteredTestSuites(),
+             $list = $('<ul class="" />');
+
+         if (testSuites.length > 0) {
+                // Sort TestSuites
+             testSuites.sort(function(a, b){
+                 var aName = a.name.toLowerCase();
+                 var bName = b.name.toLowerCase();
+                 return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+             });
+
+             buildTestSuiteTree($list, testSuites);
+         } else {
+             $list.append($('<li class=\'u-emptyMessage\'/>').text(Granite.I18n.get('No tests loaded.')));
+         }
+
+         self.$testsuiteTree.empty().append($list);
+
+            // self.$testsuiteTree.fipo("tap", "click", ".js-cancel-testrun", function(e) {
+            //     hobs.cancelRun();
+            // });
+
+            // self.$testrunner.on("tap click", ".js-toggle-demo-mode", function(e) {
+            //     $(this).toggleClass("is-active");
+            // });
+
+
+         self.$testingSidePanel.on('tap click', '.js-hobbes-run-all-tests', function(evt) {
+             if (hobs.currentRun() !== null) {
+                 hobs.cancelRun();
+             }
+             else {
+                 hobs.runTest();
+             }
+         });
+
+            /* Close test result panel */
+         self.$testsResult.on('tap click', '.js-testrunner-tests-result-panel-close', closeResultPanel);
+
+         self.$testsuiteTree.on('tap click', 'i.cq-TestCase-flag', function(e) {
+                // Prevent event to Bubble to parent
+             e.stopPropagation();
+
+             var testCase = $(this).closest('li').data('testCase');
+             var testSuite = $(this).closest('coral-accordion').data('testSuite');
+             var $icon = $(this);
+
+             if (testCase.state() === hobs.Chaining.Step.STATE_RUNNING) {
+                 testSuite.pause();
+
+                 $icon.removeClass('coral-Icon--pauseCircle')
+                        .addClass('coral-Icon--playCircle')
+                        .attr('title', Granite.I18n.get('Resume Test Execution'));
+             }
+             else if (testCase.state() === hobs.Chaining.Step.STATE_PAUSED) {
+                 testSuite.resume();
+
+                 $icon.removeClass('coral-Icon--playCircle')
+                        .addClass('coral-Icon--pauseCircle')
+                        .attr('title', Granite.I18n.get('Pause Test Execution'));
+             }
+             else {
+                 var options = null;
+
+                    // if ($(this).closest(".coral-Collapsible").find(".js-toggle-demo-mode").hasClass("is-active")) {
+                    //     options = {
+                    //         demoMode: true,
+                    //         delay: 1000
+                    //     };
+                    // }
+
+                 hobs.runTest(testSuite.uuid, testCase.uuid, options);
+
+                 $icon.removeClass('coral-Icon--playCircle')
+                        .addClass('coral-Icon--pauseCircle')
+                        .attr('title', Granite.I18n.get('Pause Test Execution'));
+             }
+         });
+
+         self.$testsuiteTree.on('tap click', '.js-test-details-activator', function(e) {
+             var testCase = $(this).closest('li').data('testCase');
+
+             if ($(self.$testsResult).data('testcase') === testCase) {
+                 closeResultPanel();
+             }
+             else {
+                 updateTestsResultPanel(testCase, true);
+             }
+         });
+
+            // self.$testsuiteTree.on("tap click", "li i.is-running", function(e) {
+            //     if ($(this).hasClass("coral-Icon--pauseCircle")) {
+            //         $(this).removeClass("coral-Icon--pauseCircle")
+            //             .addClass("coral-Icon--playCircle");
+            //
+            //         hobs.currentRun().pause();
+            //     } else {
+            //         $(this).removeClass("coral-Icon--playCircle")
+            //             .addClass("coral-Icon--pauseCircle");
+            //
+            //         hobs.currentRun().resume();
+            //     }
+            // });
+
+         $(hobs).on(hobs.RUN_STARTED, function(event, currentRun) {
+             console.log('hobs.RUN_STARTED');
+
+                // Clean testcase items
+             self.$testsuiteTree.find('i.coral-Icon.cq-TestCase-flag')
+                    .removeClass('coral-Icon--checkCircle is-passed is-failed')
+                    .addClass('coral-Icon--playCircle');
+
+             self.$runAllTestsBtn.attr('icon', 'stopCircle');
+
+             self.$testsuiteTree.find('[handle="header"] [handle="icon"]')
+                    .removeClass('is-passed is-failed');
+         });
+
+         $(hobs).on(hobs.RUN_FINISHED, function(event) {
+             console.log('hobs.RUN_FINISHED');
+                // Test Execution end handler
+
+             self.$runAllTestsBtn.attr('icon', 'playCircle');
+         });
+     };
+
+
+
+    // Init Hobbes.js implementation
+     $(document).ready(function() {
+         hobs.setContext($('#granite-testing-document-iframe')[0]);
+
+         self.build();
+
+         setTimeout(function() {
+             $('.testsuite-item-actions coral-icon').css('margin-right', '.3125rem');
+
+         }, 250);
+
+//        instantiateCoralWidgets(self.$testsuiteTree);
+     });
+
+     window.parseResultMsgParams = function(msgData, idx) {
+         var rawMsg = msgData.msg;
+         var params = msgData.params;
+
+         var parsedMsg = rawMsg;
+
+        // var re = /\$\{([\w+\s]+):(\d)}/gm;
+         var re = /\$\{([\w\s]+[:]*\d*)\}/gm,
+             m = null;
+
+         while ((m = re.exec(rawMsg)) !== null) {
+             if (m.index === re.lastIndex) {
+                 re.lastIndex++;
+             }
+
+             if (m[1].indexOf(':') >= 0) {
+                 var tooltipMsg = m[1].split(':');
+                 parsedMsg = parsedMsg.replace(m[0], '<span class="testaction-parameter tt-' + idx
+                    + '-' + m.index + '">' + tooltipMsg[0].toUpperCase() + '</span>');
+
+                // Append tooltip to body to avoid overflow issues in inner panel.
+                 $('body').append('<coral-tooltip placement="right" class="testaction-parameter-tt" target="tt-' + idx
+                    + '-' + m.index + '"><pre>' + hobs.reporters.parseArgValue(params[parseInt(tooltipMsg[1])]) + '</pre></coral-tooltip>');
+             }
+             else {
+                 parsedMsg = parsedMsg.replace(m[0], '<span class="testaction-parameter">'
+                    + hobs.reporters.parseArgValue(params[parseInt(m[1])]) + '</span>');
+             }
+
+         }
+
+         return parsedMsg;
+     };
+
+ }(window.hobs, jQuery, Granite, jQuery(document), this));

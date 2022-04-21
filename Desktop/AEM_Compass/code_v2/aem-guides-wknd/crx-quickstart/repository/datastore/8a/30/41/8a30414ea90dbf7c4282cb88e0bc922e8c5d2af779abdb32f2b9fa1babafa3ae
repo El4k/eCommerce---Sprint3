@@ -1,0 +1,472 @@
+(function(window, hobs, $){
+    'use strict';
+
+	// Set Granite context path as hobs context path
+    hobs.config.context_path = Granite.HTTP.getContextPath();
+
+	// Namespace alias hobsboros => hobbes
+	//window.hobs = window.testing;
+
+	// ContextHub Injection fix (GRANITE-7841)
+    window.ContextHubEmbedding = true;
+
+    var automationInfo = null;
+	// Handle auto-run
+    $(window).one(
+				'load',
+				function() {
+    // Load default YAML Web Structure
+    hobs.utils.loadWebStructure('./resources/aem-structure.yaml', hobs.utils.structure.formats.YAML, function(res) {
+        var runId = getQueryStringParameter('runId'),
+            runOptions = getQueryStringParameters('run.options'),
+            hobsConfig = getQueryStringParameter('hobs.config'),
+            proxyPort = getQueryStringParameter('proxyPort');
+
+        // Hobbes.js automated test execution request
+        if (runId) {
+            // Init communication channel with Hobbes.js browser minion application
+            // @see https://git.corp.adobe.com/QE/hobbes-js-browser-grid
+            if (proxyPort) {
+                automationInfo = {
+                    runId: runId,
+                    proxyPort: proxyPort
+                };
+                initBrowserMinionCommChannel();
+            }
+
+            if (hobsConfig) {
+                try {
+                    var parsedConfig = $.parseJSON(hobsConfig);
+                    var merged = $.extend({}, hobs.config);
+                    hobs.config = $.extend(merged, parsedConfig);
+                } catch( err ) {
+                    var msg = 'Error while parsing url parameter hobs.config = '+ hobsConfig+' due to:'+err.message;
+                    console.log(msg);
+                    hobs.postCommMsg(msg);
+                }
+            }
+
+            var options = null;
+            if (runOptions.length > 0) {
+                var optionMerger = {};
+                for (var i=0;i<runOptions.length;i++) {
+                    try {
+                        var opts = $.parseJSON(runOptions[i]);
+                        $.extend(optionMerger, opts);
+                    } catch( err ) {
+                        console.log('Error while parsing url parameter run.options = '+ runOptions+' due to:'+err.message);
+                    }
+                }
+                options = optionMerger;
+            }
+
+			// check if minion provide run instructions
+            if (proxyPort) {
+                $.get('http://127.0.0.1:' + proxyPort + '/run/' + runId).done(function(data, textStatus, jqXHR) {
+                    if (data) {
+                        if (data.hobs && data.hobs.config) {
+                            var merged = $.extend({}, hobs.config);
+                            hobs.config = $.extend(merged, data.hobs.config);
+                        }
+                        if (data.options) {
+                            options = $.extend(options === null ? {}:options, data.options);
+                        }
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    console.log('Error while loading browser minion instructions due to '+errorThrown);
+                }).always(function() {
+                    automationInfo.options = options;
+                    hobs.runTest(null, null, options);
+                });
+            } else {
+                hobs.runTest(null, null, options);
+            }
+
+        }
+    });
+});
+
+    /** Private function */
+
+    function getTestPlanLength(plan) {
+        var counter = 0;
+
+        function traversePlan(plan) {
+            for (var i=0; i < plan.length; i++) {
+                if (plan[i].steps) {
+                    // current entry is a TestSuite so recursively call on that entry steps
+                    traversePlan(plan[i].steps);
+                } else {
+                    counter++;
+                }
+            }
+        }
+
+        traversePlan(plan);
+        return counter;
+    }
+
+    /**
+     * Export the steps as a json output containing the list of TestCase it contains that would be executed
+     * @param {array} allSteps the array of TestSteps to be exported
+     *
+     * @returns {array} object list, representing the steps in the order it would be executed in the for.
+     *
+     * Example structure:
+     * [ { id: <step.id>, name: <step.name>, path: <step hierarchy path> }, .... ]
+     *
+     * In case of a inner TestSuite, it would traverse them to collect the inner TestCases.
+     *
+     *
+     * @memberof hobs.utils
+     **/
+    hobs.exportTestPlan = function(allSteps) {
+
+        // define a recursive function to traverse TestSuite's TestCases
+        function traverseSteps(steps, path) {
+            var plan = [];
+            // filter and only keep testcases that match the filterMetadata
+            for (var i = 0; i < steps.length; i++) {
+                var testStep = steps[i];
+                if (hobs.TestCase.prototype.isPrototypeOf(testStep) || hobs.TestSuite.prototype.isPrototypeOf(testStep)) {
+                    var newPath = path + '/' + testStep.id;
+                    var newEntry = { id: testStep.id, name: testStep.name, path: newPath };
+                    if(hobs.TestSuite.prototype.isPrototypeOf(testStep)) {
+                        newEntry.steps = traverseSteps(testStep.getTestCases(), newPath);
+                    }
+                    plan.push(newEntry);
+                } // else invalid / unexpected type of object so ignoring it
+            }
+            return plan;
+        }
+
+        return traverseSteps(allSteps, '');
+    };
+
+    hobs.isAutomated = function() {
+        return automationInfo !== null;
+    };
+
+    hobs.automation = function() {
+        return automationInfo;
+    };
+
+    hobs.postCommMsg = function(msg) {
+        var autoInfo = hobs.automation();
+        if (autoInfo !== null) {
+            $.post(
+                                'http://127.0.0.1:' + autoInfo.proxyPort + '/comm',
+                {
+                    runId: autoInfo.runId,
+                    msg: msg
+                });
+        }
+    };
+
+    hobs.postResultData = function(id, data, doAppend) {
+        doAppend = (doAppend === true) ? true : false;
+        data = ($.type(data) !== 'string') ? JSON.stringify(data, null, 4) : data;
+
+				// Stringify data if needed
+
+        if (hobs.isAutomated()) {
+						// POST /result request to browser minion app
+            $.ajax({
+                url: 	'http://127.0.0.1:' + hobs.automation().proxyPort + '/result',
+								// dataType:"JSON",
+                type: 	'POST',
+                async: 	false,
+                data: {
+                    runId: hobs.automation().runId,
+                    filename: id,
+                    data: data
+                }
+            });
+
+            // $.post(, {
+            //     runId: runId,
+            //     filename: id,
+            //     data: data
+            // });
+        } else {
+            if (window.localStorage) {
+                var now = new Date(),
+                    results = [],
+                    result = {
+                        date: now.toJSON(),
+                        data: data
+                    };
+
+				// Store data in localstorage
+                if (doAppend) {
+                    var lsDataStr = window.localStorage.getItem(id);
+
+                    try {
+                        results = JSON.parse(lsDataStr);
+                    } catch (e) {
+						// Nothing specific to do here...
+                    }
+
+                }
+
+                results.push(result);
+                var resultsStr = JSON.stringify(results);
+
+                window.localStorage.setItem(id, resultsStr);
+            }
+        }
+
+		// log it to the console
+        console.log('Hobbes.js - Result Data');
+        console.log(id+'>>>');
+        console.log(data);
+        console.log('<<<'+id);
+    };
+
+    hobs.getHtmlTemplate = function() {
+        var htmlResult = hobs.reporters.formatResult({}, hobs.reporters.HTML, true);
+        var output = htmlResult.replace(/<div class="testsuites">.*<\/div> <script/,'<div class="testsuites">$inject</div> <script');
+        return output;
+    };
+
+    hobs.getHtmlSnippet = function(testcaseResult) {
+        var htmlResult = hobs.reporters.formatResult(testcaseResult, hobs.reporters.HTML, true);
+        var htmlParts = $.parseHTML(htmlResult, document, true);
+        var output = '';
+        for (var i=0; i < htmlParts.length; i++) {
+            var $htmlPart = $(htmlParts[i]);
+            if ($htmlPart.hasClass('testsuites')) {
+                output += $htmlPart.html();
+                break;
+            }
+        }
+        return output;
+    };
+
+    function collectPhaseSteps(testsuiteResult, phase) {
+        var phaseSteps = [];
+        var steps = testsuiteResult.steps || [];
+        for (var i=0; i < steps.length; i++) {
+            var step = steps[i],
+                p = step.phase;
+            if (p && p === phase) {
+                phaseSteps.push(step);
+            }
+        }
+        return phaseSteps;
+    }
+
+    function getHTMLForSteps(steps) {
+        var htmlOut = '';
+        for (var i=0; i < steps.length;i++) {
+            htmlOut += hobs.getHtmlSnippet(steps[i]);
+        }
+        return htmlOut;
+    }
+
+    function initBrowserMinionCommChannel() {
+        var currentTestPath = '',
+            currentTestSuite = null,
+            alreadyStoredBeforeData = [],
+            proxyPort = hobs.automation().proxyPort,
+            runId = hobs.automation().runId;
+
+        hobs.postCommMsg('Login successful, comm channel initialized on hobs events');
+
+        function storePhaseData(path, testsuiteResult, type) {
+            var phaseSteps = collectPhaseSteps(testsuiteResult, type),
+                htmlDataPhaseSteps = getHTMLForSteps(phaseSteps);
+
+// only store if phases exist
+            if (phaseSteps.length > 0) {
+                $.post(
+										'http://127.0.0.1:' + proxyPort + '/intermediate/result',
+                    {
+                        runId:runId,
+                        path: path,
+                        type: 'testsuite',
+                        phase: type,
+                        htmlData: htmlDataPhaseSteps
+                    });
+            }
+        }
+
+        $(hobs).on(hobs.RUN_STARTED, function() {
+            var currentPlan = hobs.exportTestPlan(hobs.currentRun().steps()),
+                planLength = getTestPlanLength(currentPlan);
+            hobs.postCommMsg('Run started, expecting to execute '+planLength+' TestCase(s) based on the current filters applied');
+
+            $.post('http://127.0.0.1:' + proxyPort + '/intermediate/plan', {
+                runId: runId,
+                htmlTemplate: hobs.getHtmlTemplate(),
+                plan: JSON.stringify(currentPlan)
+            });
+        });
+
+        $(hobs).on(hobs.RUN_FINISHED, function() {
+            var resXml = hobs.reporters.formatResult(hobs.result(), hobs.reporters.JUNIT_XML),
+                resHtml = hobs.reporters.formatResult(hobs.result(), hobs.reporters.HTML, true);
+
+            $.post('http://127.0.0.1:' + proxyPort + '/end', {
+                runId: runId,
+                resultXml: resXml,
+                resultHtml: resHtml
+            });
+        });
+
+        $(hobs).on(hobs.TESTSUITE_STARTED, function(evt, testsuite) {
+            hobs.postCommMsg('[TS][RUNNING] ' + testsuite.name);
+
+            // check for current testsuite before steps
+            if (currentTestPath !== '' && alreadyStoredBeforeData.indexOf(currentTestPath) < 0) {
+                storePhaseData(currentTestPath, currentTestSuite.result(), 'before');
+                alreadyStoredBeforeData.push(currentTestPath);
+            }
+
+            currentTestPath = currentTestPath + '/' + testsuite.id;
+            currentTestSuite = testsuite;
+        });
+
+        $(hobs).on(hobs.TESTSUITE_FINISHED, function(evt, testsuite) {
+            hobs.postCommMsg('[TS]' + (testsuite.result().passed ? '[PASSED ]' : '[FAILED ]')
+                + ' ' + testsuite.name + ' (duration: ' + testsuite.duration('s') + 's.)');
+            // store intermediate result data of before/after in case it crashes.
+            storePhaseData(currentTestPath, currentTestSuite.result(), 'after');
+
+            currentTestPath = currentTestPath.substring(0,currentTestPath.lastIndexOf('/'));
+        });
+
+        $(hobs).on(hobs.TESTCASE_STARTED, function(evt, testcase) {
+            hobs.postCommMsg('  [TC][RUNNING] ' + testcase.name);
+        });
+
+        $(hobs).on(hobs.TESTCASE_FINISHED, function(evt, testcase) {
+            var msg = '  [TC]' + (testcase.result().passed ? '[PASSED ]' : '[FAILED ]')
+										+ ' ' + testcase.name + ' (duration: ' + testcase.duration('s') + 's.)';
+
+            if (!testcase.result().passed) {
+                msg += '\n' + testcase.result(hobs.reporters.TXT);
+            }
+
+            hobs.postCommMsg(msg);
+
+            // check for current testsuite before steps
+            if (alreadyStoredBeforeData.indexOf(currentTestPath) < 0) {
+                storePhaseData(currentTestPath, currentTestSuite.result(), 'before');
+                alreadyStoredBeforeData.push(currentTestPath);
+            }
+
+            // store intermediate result data in case it crashes.
+            var testcaseResult = testcase.result();
+            $.post(
+                'http://127.0.0.1:' + proxyPort + '/intermediate/result',
+                {
+                    runId:runId,
+                    path: currentTestPath + '/' + testcase.id,
+                    type: 'testcase',
+                    xmlData: hobs.reporters.formatResult(testcaseResult, hobs.reporters.JUNIT_XML),
+                    htmlData: hobs.getHtmlSnippet(testcaseResult)
+                });
+        });
+
+        $(hobs).on(hobs.TESTCASE_FAILED, function(evt, testcase, teststep) {
+
+            var res = $.ajax({
+                url:    'http://127.0.0.1:' + proxyPort + '/comm',
+                type:   'POST',
+                async:  false,
+                data: {
+                    runId:runId,
+                    msg: 'Screenshot'
+                }
+            }).responseText;
+            if (res.length > 0) {
+                // Screenshot successfully returned
+                teststep.result().metadata = { screenshot: res };
+                console.log('metadata set with screenshot');
+            }
+
+        });
+    }
+
+    function getQueryStringParameter(key, queryString) {
+        var url = queryString || location.search;
+
+        var keyname = key.replace(/[*+?^$.\[\]{}()|\\\/]/g, '\\$&'); // escape RegEx control chars
+        var match = url.match(new RegExp('[?&]' + keyname + '=([^&]+)(&|$)'));
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+    }
+
+    function getQueryStringParameters(key, queryString) {
+        var url = queryString || location.search,
+            allMatching = [];
+
+        if (url.indexOf('?') === 0) {
+            url = url.substring(1);
+        }
+        var params = url.split('&');
+        for (var i=0; i<params.length; i++) {
+            var param = params[i];
+            var keyvalue = param.split('=');
+            if (keyvalue.length > 1 && keyvalue[0] === key) {
+                allMatching.push(decodeURIComponent(keyvalue[1]));
+            }
+        }
+        return allMatching;
+    }
+
+	// $(hobs).on(hobs.TESTCASE_FINISHED, function(evt, testcase) {
+	// });
+
+    $(hobs).on(hobs.CONTEXT_NAVIGATION_LOAD, function() {
+        $('.ui-testing-side-panel #page-structure').empty();
+
+        if(hobs.structure.currentPage !== null) {
+            $('.ui-testing-side-panel #page-structure').append(hobs.getWebStructureInHtml(hobs.structure.currentPage));
+
+            $('.js-web-element')
+                .on('mouseover', function() {
+                    hobs.utils.highlightElement($(this).attr('data-selector'));
+                })
+                .on('mouseout', function() {
+                    $('.highlightDiv').remove();
+                });
+        }
+    });
+
+
+
+    hobs.getWebStructureInHtml = function(structure, name, parentSelector, path) {
+        var $html = $('<div />').css('margin-left', '1rem'),
+            parentSel = (parentSelector !== null) ? parentSelector+' ' : '',
+            selector = (structure.hasOwnProperty('selector')) ?
+											(parentSelector + structure.selector)
+											:
+											'';
+
+        if (name) {
+            $html.attr('name', name);
+            $html.prepend('<h2/>').text(name);
+        }
+
+        if (selector !== '') {
+            path = path ? [ path, name ].join(' > ') : name;
+            $html.attr('data-path', path);
+            $html.attr('data-selector', selector);
+            $html.addClass('js-web-element');
+        }
+
+        $.each(structure, function(key, value) {
+            if(value !== null && typeof value === 'object') {
+                $html.append(hobs.getWebStructureInHtml(value, key, (selector !== '' ? selector : parentSel), path));
+            } else {
+                $html.append('<input type="hidden" name="' + key + '" value="' + value + '">');
+            }
+        });
+
+        return $html;
+    };
+
+    window.h = window.hobs;
+
+})(window, window.hobs, $);
